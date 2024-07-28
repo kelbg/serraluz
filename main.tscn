@@ -1,0 +1,158 @@
+[gd_scene load_steps=9 format=3 uid="uid://d7jxnej2vcu5"]
+
+[ext_resource type="Script" path="res://scripts/ChatController.gd" id="1_8wvgl"]
+[ext_resource type="Script" path="res://GameController.gd" id="1_fkfaa"]
+[ext_resource type="PackedScene" uid="uid://q7mlu3p62o65" path="res://components/message_container.tscn" id="2_50mcd"]
+[ext_resource type="Texture2D" uid="uid://b2b41tv6pcjij" path="res://graldor0.png" id="2_ivcat"]
+[ext_resource type="Texture2D" uid="uid://deb2u11k1fxqi" path="res://icon.svg" id="2_ljsy7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mial8"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r25pw"]
+bg_color = Color(0.243137, 0.243137, 0.243137, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="SystemFont" id="SystemFont_ldluc"]
+font_names = PackedStringArray("Bahnschrift")
+
+[node name="Main" type="Node"]
+
+[node name="GameController" type="Node" parent="."]
+script = ExtResource("1_fkfaa")
+char_icon = ExtResource("2_ivcat")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="GameController"]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container")]
+layout_mode = 2
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -550.0
+offset_top = -20.0
+offset_right = 550.0
+offset_bottom = 298.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
+script = ExtResource("1_8wvgl")
+message_template = ExtResource("2_50mcd")
+default_char_icon = ExtResource("2_ljsy7")
+chat_container = NodePath("ScrollContainer/ChatContainer")
+input = NodePath("Input")
+scroll_container = NodePath("ScrollContainer")
+
+[node name="Input" type="LineEdit" parent="UI/ChatPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_top = 272.0
+offset_right = 1020.0
+offset_bottom = 303.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_r25pw")
+placeholder_text = "Digite sua mensagem"
+
+[node name="ClearButton" type="Button" parent="UI/ChatPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -47.0
+offset_right = -10.0
+offset_bottom = -15.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "🗑️"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/ChatPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = -20.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChatContainer" type="VBoxContainer" parent="UI/ChatPanel/ScrollContainer"]
+custom_minimum_size = Vector2(1040, 247)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 20.0
+offset_right = 1126.0
+offset_bottom = 140.0
+
+[node name="Panel" type="Panel" parent="UI/HBoxContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Graldor0" type="TextureRect" parent="UI/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -45.0
+offset_right = 45.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_ivcat")
+expand_mode = 1
+
+[node name="Panel2" type="Panel" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/HBoxContainer/Panel2"]
+layout_mode = 2
+offset_left = 10.0
+offset_top = 9.0
+offset_right = 965.0
+offset_bottom = 114.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_fonts/normal_font = SubResource("SystemFont_ldluc")
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+text = "[color=gold]GRALDOR PEDRATORVO[/color]
+
+Graldor Pedratorvo é um anão robusto e de barba longa, sempre vestindo um avental de couro surrado e com um olhar um tanto compenetrado. Ele é o ferreiro da pequena vila de Thrumbleton, conhecido por suas habilidades excepcionais na forja de armas e armaduras. Apesar de seu aspecto sério quando está trabalhando, Graldor é amigável e gosta de uma boa conversa, especialmente se envolver histórias de batalhas e lendas antigas. Ele está sempre disposto a ajudar os viajantes, oferecendo conselhos sábios e suas habilidades como ferreiro exímio."
+fit_content = true
+
+[connection signal="message_received" from="GameController" to="UI/ChatPanel" method="_on_message_received"]
+[connection signal="text_submitted" from="UI/ChatPanel/Input" to="GameController" method="_on_message_submitted"]
+[connection signal="text_submitted" from="UI/ChatPanel/Input" to="UI/ChatPanel" method="_on_message_submitted"]
+[connection signal="pressed" from="UI/ChatPanel/ClearButton" to="GameController" method="_on_clear_pressed"]
+[connection signal="pressed" from="UI/ChatPanel/ClearButton" to="UI/ChatPanel" method="_on_clear_pressed"]

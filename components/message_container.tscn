@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=3 uid="uid://q7mlu3p62o65"]
+
+[ext_resource type="Texture2D" uid="uid://deb2u11k1fxqi" path="res://icon.svg" id="1_njv0p"]
+
+[sub_resource type="SystemFont" id="SystemFont_k6uud"]
+font_names = PackedStringArray("Trebuchet MS")
+
+[sub_resource type="SystemFont" id="SystemFont_5imvq"]
+font_names = PackedStringArray("Trebuchet MS")
+subpixel_positioning = 0
+
+[node name="MessageContainer" type="HBoxContainer"]
+custom_minimum_size = Vector2(1040, 0)
+
+[node name="CharacterInfoContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="CharacterName" type="Label" parent="CharacterInfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_k6uud")
+theme_override_font_sizes/font_size = 12
+text = "[CHARACTER]"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="CharacterIconContainer" type="CenterContainer" parent="CharacterInfoContainer"]
+layout_mode = 2
+
+[node name="CharacterIcon" type="TextureRect" parent="CharacterInfoContainer/CharacterIconContainer"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture = ExtResource("1_njv0p")
+expand_mode = 1
+
+[node name="TextContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CharacterMessage" type="RichTextLabel" parent="TextContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(940, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+focus_mode = 2
+theme_override_fonts/normal_font = SubResource("SystemFont_5imvq")
+theme_override_font_sizes/normal_font_size = 14
+text = "[MESSAGE]"
+fit_content = true
+selection_enabled = true
