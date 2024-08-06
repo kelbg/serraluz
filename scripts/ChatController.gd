@@ -1,6 +1,8 @@
 extends Node
 
 @export var message_template: PackedScene
+@export var default_placeholder_text: String
+@export var awaiting_response_placeholder_text: String
 @export var default_char_icon: Texture2D
 @export var chat_container: VBoxContainer
 @export var input: LineEdit
@@ -9,8 +11,9 @@ extends Node
 @onready var scrollbar: VScrollBar = scroll_container.get_v_scroll_bar()
 
 func _ready() -> void:
-	input.grab_focus()
 	scrollbar.changed.connect(_on_scrollbar_changed)
+	input.placeholder_text = default_placeholder_text
+	input.grab_focus()
 
 func display_message(char_name: String, msg: String, icon: Texture2D = default_char_icon) -> void:
 	var new_msg: Node = message_template.instantiate()
@@ -21,7 +24,7 @@ func display_message(char_name: String, msg: String, icon: Texture2D = default_c
 
 func toggle_input(enabled: bool) -> void:
 	input.editable = enabled
-	input.placeholder_text = "Digite sua mensagem" if enabled else "Aguardando resposta..."
+	input.placeholder_text = default_placeholder_text if enabled else awaiting_response_placeholder_text
 
 func _on_message_submitted(text: String) -> void:
 	if text.strip_edges() == "":

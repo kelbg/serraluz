@@ -54,6 +54,8 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 script = ExtResource("1_8wvgl")
 message_template = ExtResource("2_50mcd")
+default_placeholder_text = "Digite sua mensagem"
+awaiting_response_placeholder_text = "Aguardando resposta..."
 default_char_icon = ExtResource("2_ljsy7")
 chat_container = NodePath("ScrollContainer/ChatContainer")
 input = NodePath("Input")
@@ -68,7 +70,6 @@ offset_bottom = 303.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_r25pw")
-placeholder_text = "Digite sua mensagem"
 
 [node name="ClearButton" type="Button" parent="UI/ChatPanel"]
 unique_name_in_owner = true
