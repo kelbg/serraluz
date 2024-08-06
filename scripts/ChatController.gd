@@ -3,6 +3,7 @@ extends Node
 @export var message_template: PackedScene
 @export var default_placeholder_text: String
 @export var awaiting_response_placeholder_text: String
+@export var player_name: String
 @export var default_char_icon: Texture2D
 @export var chat_container: VBoxContainer
 @export var input: LineEdit
@@ -22,6 +23,7 @@ func display_message(char_name: String, msg: String, icon: Texture2D = default_c
 	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = icon
 	chat_container.add_child(new_msg)
 
+# Usado quando uma msg é enviada, impedindo novas msgs de serem enviadas antes de receber uma resposta
 func toggle_input(enabled: bool) -> void:
 	input.editable = enabled
 	input.placeholder_text = default_placeholder_text if enabled else awaiting_response_placeholder_text
@@ -30,7 +32,7 @@ func _on_message_submitted(text: String) -> void:
 	if text.strip_edges() == "":
 		return
 
-	display_message("Você", text)
+	display_message(player_name, text)
 	input.clear()
 	toggle_input(false)
 

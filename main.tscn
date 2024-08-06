@@ -56,6 +56,7 @@ script = ExtResource("1_8wvgl")
 message_template = ExtResource("2_50mcd")
 default_placeholder_text = "Digite sua mensagem"
 awaiting_response_placeholder_text = "Aguardando resposta..."
+player_name = "Você"
 default_char_icon = ExtResource("2_ljsy7")
 chat_container = NodePath("ScrollContainer/ChatContainer")
 input = NodePath("Input")
