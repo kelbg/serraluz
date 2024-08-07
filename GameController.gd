@@ -64,12 +64,13 @@ func handle_server_response() -> void:
 		print("Não foi possível obter uma resposta.")
 		return
 
-	print("Resposta recebida. Iniciando streaming do conteúdo.")
+	print("Resposta recebida. Iniciando streaming do conteúdo...")
 	stream_server_response()
 
 func stream_server_response() -> void:
 	emit_signal("message_stream_started", "ChatGPT")
 	var read_buffer := PackedByteArray()
+	var content := ""
 
 	while client.get_status() == HTTPClient.STATUS_BODY:
 		client.poll()
@@ -79,10 +80,13 @@ func stream_server_response() -> void:
 		else:
 			read_buffer += chunk
 			var chunk_text := chunk.get_string_from_utf8()
-			print(chunk_text)
+			content += parse_chunk(chunk_text)
 			emit_signal("message_stream_received", parse_chunk(chunk_text))
+			# print(chunk_text)
 	
 
+	messages.append({"role": "assistant", "content": content})
+	print("Mensagem recebida:\n%s" % messages[-1])
 	print("Bytes recebidos: ", read_buffer.size())
 	emit_signal("message_stream_finished")
 
