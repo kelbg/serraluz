@@ -1,6 +1,8 @@
 {
 	"OpenAI": {
-		"url": "https://api.openai.com/v1/chat/completions",
+		"base_url": "https://api.openai.com",
+		"chat_endpoint": "/v1/chat/completions",
+		"full_url": "https://api.openai.com/v1/chat/completions",
 		"models": [
 			"gpt-4o-mini",
 			"gpt-4o"
