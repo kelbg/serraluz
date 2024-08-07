@@ -39,8 +39,10 @@ func send_request_stream(role: String, content: String, model: String) -> void:
 	endpoint["params"]["messages"] = messages
 	endpoint["params"]["model"] = model
 	endpoint["params"]["stream"] = true
+
+	var approx_token_count := str(messages).length() / 4.0
+	print("Enviando requisição. Contexto (~%d tokens):\n%s" % [approx_token_count, "\n".join(messages)])
 	
-	print("Enviando requisição...")
 	var error_code := client.request(
 		HTTPClient.METHOD_POST, 
 		endpoint["chat_endpoint"], 
