@@ -3,9 +3,9 @@ extends Node
 @export var char_icon: Texture2D
 
 signal message_received(char_name: String, msg: String)
-signal message_stream_started(char_name: String)
-signal message_stream_received(msg: String)
-signal message_stream_finished()
+signal text_stream_started(char_name: String)
+signal text_stream_received(msg: String)
+signal text_stream_finished()
 
 var messages: Array
 var endpoint: Dictionary
@@ -33,6 +33,38 @@ func setup_client() -> HTTPClient:
 	print("Conectado")
 	
 	return new_client
+
+func load_system_prompt(file_path: String) -> void:
+	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
+	messages.append({"role": "system", "content": file.get_as_text()})
+
+func setup_endpoint(service: String) -> Dictionary:
+	print("Configurando endpoint para '%s'..." % service)
+	var new_endpoint: Dictionary = JSON.parse_string(FileAccess.open("endpoints.json", FileAccess.READ).get_as_text())[service]
+	new_endpoint["headers"] += [
+		"Content-Type: application/json",
+		"Authorization: Bearer %s" % get_api_key(service)
+	]
+	
+	print("Endpoint configurado")
+	return new_endpoint
+
+func get_api_key(service: String) -> String:
+	var cfg: ConfigFile = ConfigFile.new()
+	cfg.load("environment.cfg")
+	return cfg.get_value("", "%s_API_KEY" % service)
+
+func send_request(role: String, content: String, model: String) -> void:
+	messages.append({"role": role, "content": content})
+	endpoint["params"]["messages"] = messages
+	endpoint["params"]["model"] = model
+	
+	$HTTPRequest.request(
+		endpoint["full_url"],
+		endpoint["headers"],
+		HTTPClient.METHOD_POST,
+		str(endpoint["params"])
+	)
 
 func send_request_stream(role: String, content: String, model: String) -> void:
 	messages.append({"role": role, "content": content})
@@ -70,7 +102,7 @@ func handle_server_response() -> void:
 	stream_server_response()
 
 func stream_server_response() -> void:
-	emit_signal("message_stream_started", "ChatGPT")
+	emit_signal("text_stream_started", "ChatGPT")
 	var read_buffer := PackedByteArray()
 	var content := ""
 
@@ -83,14 +115,14 @@ func stream_server_response() -> void:
 			read_buffer += chunk
 			var chunk_text := chunk.get_string_from_utf8()
 			content += parse_chunk(chunk_text)
-			emit_signal("message_stream_received", parse_chunk(chunk_text))
+			emit_signal("text_stream_received", parse_chunk(chunk_text))
 			# print(chunk_text)
 	
 
 	messages.append({"role": "assistant", "content": content})
 	print("Mensagem recebida:\n%s" % messages[-1])
 	print("Bytes recebidos: ", read_buffer.size())
-	emit_signal("message_stream_finished")
+	emit_signal("text_stream_finished")
 
 # Extrai o conteúdo de um chunk, que pode ter mais de um conjunto de dados (separados por \n)
 func parse_chunk(chunk_text: String) -> String:
@@ -112,39 +144,6 @@ func parse_chunk(chunk_text: String) -> String:
 	
 	
 	return output
-	
-
-func load_system_prompt(file_path: String) -> void:
-	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
-	messages.append({"role": "system", "content": file.get_as_text()})
-
-func setup_endpoint(service: String) -> Dictionary:
-	print("Configurando endpoint para '%s'..." % service)
-	var new_endpoint: Dictionary = JSON.parse_string(FileAccess.open("endpoints.json", FileAccess.READ).get_as_text())[service]
-	new_endpoint["headers"] += [
-		"Content-Type: application/json",
-		"Authorization: Bearer %s" % get_api_key(service)
-	]
-	
-	print("Endpoint configurado")
-	return new_endpoint
-
-func get_api_key(service: String) -> String:
-	var cfg: ConfigFile = ConfigFile.new()
-	cfg.load("environment.cfg")
-	return cfg.get_value("", "%s_API_KEY" % service)
-
-func send_request(role: String, content: String, model: String) -> void:
-	messages.append({"role": role, "content": content})
-	endpoint["params"]["messages"] = messages
-	endpoint["params"]["model"] = model
-	
-	$HTTPRequest.request(
-		endpoint["full_url"],
-		endpoint["headers"],
-		HTTPClient.METHOD_POST,
-		str(endpoint["params"])
-	)
 
 func _on_request_completed(_result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	var json: Dictionary = JSON.parse_string(body.get_string_from_utf8())
