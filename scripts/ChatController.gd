@@ -45,22 +45,21 @@ func _on_clear_pressed() -> void:
 		msg.queue_free()
 
 func _on_message_received(char_name: String, msg: String, icon: Texture2D = default_char_icon) -> void:
-	await get_tree().create_timer(0.001).timeout # Evita erros na ordem dos sinais
+	await get_tree().process_frame # Evita erros na ordem dos sinais
 	add_chat_message(char_name, msg, icon)
 	toggle_input(true)
 
 func _on_text_stream_started(char_name:String, icon:Texture2D = default_char_icon) -> void:
-	await get_tree().create_timer(0.001).timeout
+	# await get_tree().create_timer(0.1).timeout
 	msg_being_streamed = add_chat_message(char_name, "", icon)
 	toggle_input(false)
 
 func _on_text_stream_received(msg:String) -> void:
-	# TODO: Configurar delay para o streaming do conteúdo
-	await get_tree().create_timer(0.001).timeout
+	await get_tree().create_timer(0.1).timeout
 	msg_being_streamed.get_node("TextContainer/CharacterMessage").text += msg
 
 func _on_text_stream_finished() -> void:
-	await get_tree().create_timer(0.001).timeout
+	await get_tree().create_timer(0.1).timeout
 	msg_being_streamed = null
 	toggle_input(true)
 
