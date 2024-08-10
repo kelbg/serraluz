@@ -3,8 +3,9 @@ extends Node
 @export var char_icon: Texture2D
 
 signal message_received(char_name: String, msg: String)
-signal text_stream_started(char_name: String)
+signal request_sent(char_name: String)
 signal text_stream_received(msg: String)
+signal text_stream_started()
 signal text_stream_finished()
 
 var messages: Array
@@ -84,6 +85,8 @@ func send_request_stream(role: String, content: String, model: String) -> void:
 
 	assert(error_code == OK)
 	print("Requisição enviada. Aguardando resposta...")
+	# TODO: Refactor all .emit()
+	request_sent.emit("ChatGPT")
 	handle_server_response()
 
 func handle_server_response() -> void:
@@ -98,12 +101,13 @@ func handle_server_response() -> void:
 		print("Não foi possível obter uma resposta.")
 		return
 
-	print("Resposta recebida. Iniciando streaming do conteúdo...")
+	print("Resposta recebida. Aguardando dados...")
 	stream_server_response()
 
 func stream_server_response() -> void:
-	emit_signal("text_stream_started", "ChatGPT")
+	# emit_signal("text_stream_started", "ChatGPT")
 	var read_buffer := PackedByteArray()
+	var has_started := false
 	var content := ""
 
 	while client.get_status() == HTTPClient.STATUS_BODY:
@@ -111,12 +115,18 @@ func stream_server_response() -> void:
 		var chunk := client.read_response_body_chunk()
 		if chunk.size() == 0:
 			await get_tree().process_frame
-		else:
-			read_buffer += chunk
-			var chunk_text := chunk.get_string_from_utf8()
-			content += parse_chunk(chunk_text)
-			emit_signal("text_stream_received", parse_chunk(chunk_text))
-			# print(chunk_text)
+			continue
+
+		if !has_started:
+			has_started = true
+			text_stream_started.emit()
+			print("Iniciando streaming de dados...")
+
+		read_buffer += chunk
+		var chunk_text := chunk.get_string_from_utf8()
+		content += parse_chunk(chunk_text)
+		emit_signal("text_stream_received", parse_chunk(chunk_text))
+		# print(chunk_text)
 	
 
 	messages.append({"role": "assistant", "content": content})
