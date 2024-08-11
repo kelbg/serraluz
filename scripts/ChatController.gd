@@ -25,7 +25,6 @@ func _ready() -> void:
 
 func add_chat_message(char_name: String, msg: String, icon: Texture2D = default_char_icon) -> Node:
 	var new_msg: Node = message_template.instantiate()
-	# TODO: NodePath?
 	new_msg.get_node("TextContainer/CharacterMessage").text = msg
 	new_msg.get_node("CharacterInfoContainer/CharacterName").text = char_name
 	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = icon
@@ -40,16 +39,16 @@ func toggle_input(enabled: bool) -> void:
 # Anima o texto, inserindo um caracter de cada vez
 func animate_text(chat_msg: Node) -> void:
 	toggle_input(false)
-	emit_signal("typing_started")
+	typing_started.emit()
 
 	var text_field: RichTextLabel = chat_msg.get_node("TextContainer/CharacterMessage")
 	while text_field.visible_characters < text_field.text.length():
 		text_field.visible_characters += 1
-		emit_signal("typing_char_added")
-		await get_tree().create_timer(0.025).timeout
+		typing_char_added.emit()
+		await get_tree().create_timer(0.015).timeout
 	
 
-	emit_signal("typing_finished")
+	typing_finished.emit()
 
 func _on_message_submitted(text: String) -> void:
 	if text.strip_edges() == "":
@@ -64,12 +63,14 @@ func _on_clear_pressed() -> void:
 	for msg in chat_container.get_children():
 		msg.queue_free()
 
+# Move a barra de rolagem para o final sempre que novas mensagens forem adicionadas
+func _on_scrollbar_changed() -> void:
+	scroll_container.scroll_vertical = int(scrollbar.max_value)
+
 func _on_message_received(char_name: String, msg: String, icon: Texture2D = default_char_icon) -> void:
-	await get_tree().process_frame # Evita erros na ordem dos sinais
 	add_chat_message(char_name, msg, icon)
 	toggle_input(true)
 
-# TODO: Planner - Char scene
 func _on_request_sent(char_name: String, icon: Texture2D = default_char_icon) -> void:
 	await get_tree().process_frame # Evita que a resposta seja exibida antes da msg do jogador
 	text_stream_chat_msg = add_chat_message(char_name, "", icon)
@@ -92,6 +93,3 @@ func _on_typing_finished() -> void:
 	text_stream_chat_msg = null
 	toggle_input(true)	
 
-# Move a barra de rolagem para o final sempre que novas mensagens forem adicionadas
-func _on_scrollbar_changed() -> void:
-	scroll_container.scroll_vertical = int(scrollbar.max_value)

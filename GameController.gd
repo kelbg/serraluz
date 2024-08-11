@@ -85,7 +85,6 @@ func send_request_stream(role: String, content: String, model: String) -> void:
 
 	assert(error_code == OK)
 	print("Requisição enviada. Aguardando resposta...")
-	# TODO: Refactor all .emit()
 	request_sent.emit("ChatGPT")
 	handle_server_response()
 
@@ -105,7 +104,6 @@ func handle_server_response() -> void:
 	stream_server_response()
 
 func stream_server_response() -> void:
-	# emit_signal("text_stream_started", "ChatGPT")
 	var read_buffer := PackedByteArray()
 	var has_started := false
 	var content := ""
@@ -125,14 +123,14 @@ func stream_server_response() -> void:
 		read_buffer += chunk
 		var chunk_text := chunk.get_string_from_utf8()
 		content += parse_chunk(chunk_text)
-		emit_signal("text_stream_received", parse_chunk(chunk_text))
-		# print(chunk_text)
+		text_stream_received.emit(parse_chunk(chunk_text))
+		# print(chunk_text) # 
 	
 
 	messages.append({"role": "assistant", "content": content})
 	print("Mensagem recebida:\n%s" % messages[-1])
 	print("Bytes recebidos: ", read_buffer.size())
-	emit_signal("text_stream_finished")
+	text_stream_finished.emit()
 
 # Extrai o conteúdo de um chunk, que pode ter mais de um conjunto de dados (separados por \n)
 func parse_chunk(chunk_text: String) -> String:
