@@ -13,7 +13,6 @@ var endpoint: Dictionary
 var client: HTTPClient
 
 func _ready() -> void:
-	$HTTPRequest.request_completed.connect(_on_request_completed)
 	endpoint = setup_endpoint("OpenAI")
 	client = await setup_client()
 	# load_system_prompt("character.txt")
@@ -54,18 +53,6 @@ func get_api_key(service: String) -> String:
 	var cfg: ConfigFile = ConfigFile.new()
 	cfg.load("environment.cfg")
 	return cfg.get_value("", "%s_API_KEY" % service)
-
-func send_request(role: String, content: String, model: String) -> void:
-	messages.append({"role": role, "content": content})
-	endpoint["params"]["messages"] = messages
-	endpoint["params"]["model"] = model
-	
-	$HTTPRequest.request(
-		endpoint["full_url"],
-		endpoint["headers"],
-		HTTPClient.METHOD_POST,
-		str(endpoint["params"])
-	)
 
 func send_request_stream(role: String, content: String, model: String) -> void:
 	messages.append({"role": role, "content": content})

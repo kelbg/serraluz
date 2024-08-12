@@ -29,8 +29,6 @@ font_names = PackedStringArray("Bahnschrift")
 script = ExtResource("1_fkfaa")
 char_icon = ExtResource("2_ivcat")
 
-[node name="HTTPRequest" type="HTTPRequest" parent="GameController"]
-
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15

@@ -50,7 +50,7 @@ func animate_text(chat_msg: Node) -> void:
 
 	typing_finished.emit()
 
-func _on_message_submitted(text: String) -> void:
+func _on_message_submitted(text: String) -> void: 
 	if text.strip_edges() == "":
 		return
 
