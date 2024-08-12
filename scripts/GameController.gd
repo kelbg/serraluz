@@ -72,7 +72,7 @@ func send_request_stream(role: String, content: String, model: String) -> void:
 
 	assert(error_code == OK)
 	print("Requisição enviada. Aguardando resposta...")
-	request_sent.emit("ChatGPT")
+	request_sent.emit("ChatGPT", char_icon)
 	handle_server_response()
 
 func handle_server_response() -> void:
@@ -139,11 +139,6 @@ func parse_chunk(chunk_text: String) -> String:
 
 
 	return output
-
-func _on_request_completed(_result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
-	var json: Dictionary = JSON.parse_string(body.get_string_from_utf8())
-	print("\n%s" % json)
-	emit_signal("message_received", "ChatGPT", json["choices"][0]["message"]["content"], char_icon)
 
 func _on_message_submitted(message: String) -> void:
 	send_request_stream("user", message, "gpt-4o-mini")

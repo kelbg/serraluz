@@ -1,9 +1,10 @@
 extends Node
 
+@export var player_name: String
+@export var chars_per_second: int
 @export var message_template: PackedScene
 @export var default_placeholder_text: String
 @export var awaiting_response_placeholder_text: String
-@export var player_name: String
 @export var default_char_icon: Texture2D
 @export var chat_container: VBoxContainer
 @export var input: LineEdit
@@ -31,12 +32,12 @@ func add_chat_message(char_name: String, msg: String, icon: Texture2D = default_
 	chat_container.add_child(new_msg)
 	return new_msg
 
-# Usado quando uma msg é enviada, impedindo novas msgs de serem enviadas antes de receber uma resposta
+# Habilitar impede que o jogador envie novas msgs antes de receber uma resposta
 func toggle_input(enabled: bool) -> void:
 	input.editable = enabled
 	input.placeholder_text = default_placeholder_text if enabled else awaiting_response_placeholder_text
 
-# Anima o texto, inserindo um caracter de cada vez
+# Anima o texto, exibindo um caractere de cada vez
 func animate_text(chat_msg: Node) -> void:
 	toggle_input(false)
 	typing_started.emit()
@@ -45,7 +46,7 @@ func animate_text(chat_msg: Node) -> void:
 	while text_field.visible_characters < text_field.text.length():
 		text_field.visible_characters += 1
 		typing_char_added.emit()
-		await get_tree().create_timer(0.015).timeout
+		await get_tree().create_timer(1.0 / chars_per_second).timeout
 
 
 	typing_finished.emit()
@@ -67,18 +68,14 @@ func _on_clear_pressed() -> void:
 func _on_scrollbar_changed() -> void:
 	scroll_container.scroll_vertical = int(scrollbar.max_value)
 
-func _on_message_received(char_name: String, msg: String, icon: Texture2D = default_char_icon) -> void:
-	add_chat_message(char_name, msg, icon)
-	toggle_input(true)
-
 func _on_request_sent(char_name: String, icon: Texture2D = default_char_icon) -> void:
-	await get_tree().process_frame  # Evita que a resposta seja exibida antes da msg do jogador
+	await get_tree().process_frame # Evita que a resposta seja exibida antes da msg do jogador
 	text_stream_chat_msg = add_chat_message(char_name, "", icon)
 	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").visible_characters = 0
 	toggle_input(false)
 
 func _on_text_stream_started() -> void:
-	# Aguardar até que seja transmitida uma quantidade suficiente de texto para ser exibido
+	# Aguarda até que seja transmitido texto suficiente para não finalizar a animação antes da hora
 	await get_tree().create_timer(0.2).timeout
 	animate_text(text_stream_chat_msg)
 
