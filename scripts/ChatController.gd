@@ -46,11 +46,11 @@ func animate_text(chat_msg: Node) -> void:
 		text_field.visible_characters += 1
 		typing_char_added.emit()
 		await get_tree().create_timer(0.015).timeout
-	
+
 
 	typing_finished.emit()
 
-func _on_message_submitted(text: String) -> void: 
+func _on_message_submitted(text: String) -> void:
 	if text.strip_edges() == "":
 		return
 
@@ -72,7 +72,7 @@ func _on_message_received(char_name: String, msg: String, icon: Texture2D = defa
 	toggle_input(true)
 
 func _on_request_sent(char_name: String, icon: Texture2D = default_char_icon) -> void:
-	await get_tree().process_frame # Evita que a resposta seja exibida antes da msg do jogador
+	await get_tree().process_frame  # Evita que a resposta seja exibida antes da msg do jogador
 	text_stream_chat_msg = add_chat_message(char_name, "", icon)
 	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").visible_characters = 0
 	toggle_input(false)
@@ -91,5 +91,4 @@ func _on_text_stream_finished() -> void:
 
 func _on_typing_finished() -> void:
 	text_stream_chat_msg = null
-	toggle_input(true)	
-
+	toggle_input(true)

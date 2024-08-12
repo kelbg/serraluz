@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bel12na1j1fvl"
-path="res://.godot/imported/openai-white-logomark.png-6d4c151f4c0e1b7feb5c0f071e7e49df.ctex"
+uid="uid://b2b41tv6pcjij"
+path="res://.godot/imported/graldor0.png-3b9911a19c404f88cfbd7e221639f68f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://openai-white-logomark.png"
-dest_files=["res://.godot/imported/openai-white-logomark.png-6d4c151f4c0e1b7feb5c0f071e7e49df.ctex"]
+source_file="res://characters/graldor0.png"
+dest_files=["res://.godot/imported/graldor0.png-3b9911a19c404f88cfbd7e221639f68f.ctex"]
 
 [params]
 

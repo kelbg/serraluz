@@ -24,14 +24,14 @@ func setup_client() -> HTTPClient:
 	assert(error_code == OK)
 	print("Conectando-se a '%s'..." % endpoint["base_url"])
 
-	while(new_client.get_status() == HTTPClient.STATUS_CONNECTING 
+	while (new_client.get_status() == HTTPClient.STATUS_CONNECTING
 	or new_client.get_status() == HTTPClient.STATUS_RESOLVING):
 		new_client.poll()
 		await get_tree().process_frame
 
 	assert(new_client.get_status() == HTTPClient.STATUS_CONNECTED)
 	print("Conectado")
-	
+
 	return new_client
 
 func load_system_prompt(file_path: String) -> void:
@@ -40,18 +40,18 @@ func load_system_prompt(file_path: String) -> void:
 
 func setup_endpoint(service: String) -> Dictionary:
 	print("Configurando endpoint para '%s'..." % service)
-	var new_endpoint: Dictionary = JSON.parse_string(FileAccess.open("endpoints.json", FileAccess.READ).get_as_text())[service]
+	var new_endpoint: Dictionary = JSON.parse_string(FileAccess.open("config/endpoints.json", FileAccess.READ).get_as_text())[service]
 	new_endpoint["headers"] += [
 		"Content-Type: application/json",
 		"Authorization: Bearer %s" % get_api_key(service)
 	]
-	
+
 	print("Endpoint configurado")
 	return new_endpoint
 
 func get_api_key(service: String) -> String:
 	var cfg: ConfigFile = ConfigFile.new()
-	cfg.load("environment.cfg")
+	cfg.load("config/environment.cfg")
 	return cfg.get_value("", "%s_API_KEY" % service)
 
 func send_request_stream(role: String, content: String, model: String) -> void:
@@ -62,10 +62,10 @@ func send_request_stream(role: String, content: String, model: String) -> void:
 
 	var approx_token_count := str(messages).length() / 4.0
 	print("Enviando requisição. Contexto (~%d tokens):\n%s" % [approx_token_count, "\n".join(messages)])
-	
+
 	var error_code := client.request(
-		HTTPClient.METHOD_POST, 
-		endpoint["chat_endpoint"], 
+		HTTPClient.METHOD_POST,
+		endpoint["chat_endpoint"],
 		endpoint["headers"],
 		str(endpoint["params"])
 	)
@@ -79,10 +79,10 @@ func handle_server_response() -> void:
 	while (client.get_status() == HTTPClient.STATUS_REQUESTING):
 		client.poll()
 		await get_tree().process_frame
-	
-	assert(client.get_status() == HTTPClient.STATUS_BODY 
+
+	assert(client.get_status() == HTTPClient.STATUS_BODY
 		or client.get_status() == HTTPClient.STATUS_CONNECTED)
-	
+
 	if !client.has_response():
 		print("Não foi possível obter uma resposta.")
 		return
@@ -111,8 +111,8 @@ func stream_server_response() -> void:
 		var chunk_text := chunk.get_string_from_utf8()
 		content += parse_chunk(chunk_text)
 		text_stream_received.emit(parse_chunk(chunk_text))
-		# print(chunk_text) # 
-	
+		# print(chunk_text) #
+
 
 	messages.append({"role": "assistant", "content": content})
 	print("Mensagem recebida:\n%s" % messages[-1])
@@ -126,7 +126,7 @@ func parse_chunk(chunk_text: String) -> String:
 	for line in lines:
 		if !line.begins_with("data: "):
 			continue
-		
+
 		line = line.replace("data: ", "")
 		if line == "[DONE]":
 			break
@@ -136,8 +136,8 @@ func parse_chunk(chunk_text: String) -> String:
 			continue
 
 		output += json["choices"][0]["delta"]["content"]
-	
-	
+
+
 	return output
 
 func _on_request_completed(_result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
