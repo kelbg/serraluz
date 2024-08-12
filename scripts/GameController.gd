@@ -1,6 +1,7 @@
 extends Node
 
 @export var char_icon: Texture2D
+@export var max_retries: int
 
 signal request_sent(char_name: String)
 signal text_stream_data_received(msg: String)
@@ -14,26 +15,42 @@ var client: HTTPClient
 func _ready() -> void:
 	endpoint = setup_endpoint("OpenAI")
 	client = await setup_client()
-	# add_message("system", "This interface supports only text with basic formatting in BBCode. Replace all markdown formatting in your responses with the equivalent in BBCode.")	
-	add_message("system", "This interface only supports plain text or markdown. If your response cannot be represented as such, inform the user.")
 	# add_message("character.txt")
 
-func setup_client() -> HTTPClient:
+func setup_client(retry_count: int = 0) -> HTTPClient:
 	var new_client := HTTPClient.new()
-	var error_code := new_client.connect_to_host(endpoint["base_url"])
+	var host: String = endpoint["base_url"]
+	print("Estabelecendo conexão com host '%s'..." % host)
+	var error_code := new_client.connect_to_host(host)
 
-	assert(error_code == OK)
-	print("Conectando-se a '%s'..." % endpoint["base_url"])
+	if error_code != OK and retry_count < max_retries:
+		return await check_connection(new_client, true, retry_count)
 
 	while (new_client.get_status() == HTTPClient.STATUS_CONNECTING
 	or new_client.get_status() == HTTPClient.STATUS_RESOLVING):
 		new_client.poll()
 		await get_tree().process_frame
 
-	assert(new_client.get_status() == HTTPClient.STATUS_CONNECTED)
-	print("Conectado")
+	if new_client.get_status() != HTTPClient.STATUS_CONNECTED and retry_count < max_retries:
+		return await check_connection(new_client, true, retry_count)
 
+	print("Conectado")
 	return new_client
+
+func check_connection(some_client: HTTPClient, retry: bool = true, retry_count: int = 0) -> HTTPClient:
+	some_client.poll()
+	var status := some_client.get_status()
+	print("Status da conexão: %s" % status)
+
+	if status == HTTPClient.STATUS_CONNECTED:
+		return some_client
+
+	if !retry:
+		print("Conexão não estabelecida (retry: false).")
+		return some_client
+
+	print("Tentando restabecer conexão...")
+	return await setup_client(retry_count + 1)
 
 func add_message(role: String, msg: String) -> void:
 	messages.append({"role": role, "content": msg})
@@ -55,6 +72,8 @@ func get_api_key(service: String) -> String:
 	return cfg.get_value("", "%s_API_KEY" % service)
 
 func send_request_stream(msg: String, model: String) -> void:
+	client = await check_connection(client)
+
 	add_message("user", msg)
 	endpoint["params"]["messages"] = messages
 	endpoint["params"]["model"] = model
@@ -66,7 +85,7 @@ func send_request_stream(msg: String, model: String) -> void:
 	var error_code := client.request(
 		HTTPClient.METHOD_POST,
 		endpoint["chat_endpoint"],
-		endpoint["headers"], 
+		endpoint["headers"],
 		str(endpoint["params"])
 	)
 

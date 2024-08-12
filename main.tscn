@@ -29,6 +29,7 @@ font_names = PackedStringArray("Bahnschrift")
 [node name="GameController" type="Node" parent="."]
 script = ExtResource("1_fkfaa")
 char_icon = ExtResource("2_34ysv")
+max_retries = 5
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
