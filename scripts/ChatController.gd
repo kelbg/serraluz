@@ -42,7 +42,7 @@ func animate_text(chat_msg: Node) -> void:
 	toggle_input(false)
 	typing_started.emit()
 
-	var text_field: RichTextLabel = chat_msg.get_node("TextContainer/CharacterMessage")
+	var text_field: MarkdownLabel = chat_msg.get_node("TextContainer/CharacterMessage")
 	while text_field.visible_characters < text_field.text.length():
 		text_field.visible_characters += 1
 		typing_char_added.emit()
@@ -79,13 +79,14 @@ func _on_text_stream_started() -> void:
 	await get_tree().create_timer(0.2).timeout
 	animate_text(text_stream_chat_msg)
 
-func _on_text_stream_received(msg: String) -> void:
-	await get_tree().create_timer(0.1).timeout
-	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text += msg
+func _on_text_stream_data_received(msg: String) -> void:
+	# await get_tree().create_timer(0.1).timeout
+	# text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text += msg
+	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").markdown_text += msg
 
 func _on_text_stream_finished() -> void:
 	pass
 
 func _on_typing_finished() -> void:
-	text_stream_chat_msg = null
+	# text_stream_chat_msg = null
 	toggle_input(true)

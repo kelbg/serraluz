@@ -2,9 +2,8 @@ extends Node
 
 @export var char_icon: Texture2D
 
-signal message_received(char_name: String, msg: String)
 signal request_sent(char_name: String)
-signal text_stream_received(msg: String)
+signal text_stream_data_received(msg: String)
 signal text_stream_started()
 signal text_stream_finished()
 
@@ -15,7 +14,9 @@ var client: HTTPClient
 func _ready() -> void:
 	endpoint = setup_endpoint("OpenAI")
 	client = await setup_client()
-	# load_system_prompt("character.txt")
+	# add_message("system", "This interface supports only text with basic formatting in BBCode. Replace all markdown formatting in your responses with the equivalent in BBCode.")	
+	add_message("system", "This interface only supports plain text or markdown. If your response cannot be represented as such, inform the user.")
+	# add_message("character.txt")
 
 func setup_client() -> HTTPClient:
 	var new_client := HTTPClient.new()
@@ -34,9 +35,8 @@ func setup_client() -> HTTPClient:
 
 	return new_client
 
-func load_system_prompt(file_path: String) -> void:
-	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
-	messages.append({"role": "system", "content": file.get_as_text()})
+func add_message(role: String, msg: String) -> void:
+	messages.append({"role": role, "content": msg})
 
 func setup_endpoint(service: String) -> Dictionary:
 	print("Configurando endpoint para '%s'..." % service)
@@ -54,8 +54,8 @@ func get_api_key(service: String) -> String:
 	cfg.load("config/environment.cfg")
 	return cfg.get_value("", "%s_API_KEY" % service)
 
-func send_request_stream(role: String, content: String, model: String) -> void:
-	messages.append({"role": role, "content": content})
+func send_request_stream(msg: String, model: String) -> void:
+	add_message("user", msg)
 	endpoint["params"]["messages"] = messages
 	endpoint["params"]["model"] = model
 	endpoint["params"]["stream"] = true
@@ -66,7 +66,7 @@ func send_request_stream(role: String, content: String, model: String) -> void:
 	var error_code := client.request(
 		HTTPClient.METHOD_POST,
 		endpoint["chat_endpoint"],
-		endpoint["headers"],
+		endpoint["headers"], 
 		str(endpoint["params"])
 	)
 
@@ -110,11 +110,10 @@ func stream_server_response() -> void:
 		read_buffer += chunk
 		var chunk_text := chunk.get_string_from_utf8()
 		content += parse_chunk(chunk_text)
-		text_stream_received.emit(parse_chunk(chunk_text))
-		# print(chunk_text) #
+		text_stream_data_received.emit(parse_chunk(chunk_text))
 
 
-	messages.append({"role": "assistant", "content": content})
+	add_message("assistant", content)
 	print("Mensagem recebida:\n%s" % messages[-1])
 	print("Bytes recebidos: ", read_buffer.size())
 	text_stream_finished.emit()
@@ -141,10 +140,10 @@ func parse_chunk(chunk_text: String) -> String:
 	return output
 
 func _on_message_submitted(message: String) -> void:
-	send_request_stream("user", message, "gpt-4o-mini")
+	send_request_stream(message, "gpt-4o-mini")
 	pass
 
 
 func _on_clear_pressed() -> void:
 	messages.clear()
-	# load_system_prompt("character.txt")
+	# add_message("character.txt")

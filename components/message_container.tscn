@@ -1,6 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://q7mlu3p62o65"]
+[gd_scene load_steps=17 format=3 uid="uid://q7mlu3p62o65"]
 
 [ext_resource type="Texture2D" uid="uid://deb2u11k1fxqi" path="res://icon.svg" id="1_njv0p"]
+[ext_resource type="Script" path="res://addons/markdownlabel/markdownlabel.gd" id="2_na0ju"]
+[ext_resource type="Script" path="res://addons/markdownlabel/header_formats/h1_format.gd" id="3_kvf2v"]
+[ext_resource type="Script" path="res://addons/markdownlabel/header_formats/h2_format.gd" id="4_363vg"]
+[ext_resource type="Script" path="res://addons/markdownlabel/header_formats/h3_format.gd" id="5_760qj"]
+[ext_resource type="Script" path="res://addons/markdownlabel/header_formats/h4_format.gd" id="6_28kd2"]
+[ext_resource type="Script" path="res://addons/markdownlabel/header_formats/h5_format.gd" id="7_ol25n"]
+[ext_resource type="Script" path="res://addons/markdownlabel/header_formats/h6_format.gd" id="8_5cmgc"]
 
 [sub_resource type="SystemFont" id="SystemFont_k6uud"]
 font_names = PackedStringArray("Trebuchet MS")
@@ -8,6 +15,66 @@ font_names = PackedStringArray("Trebuchet MS")
 [sub_resource type="SystemFont" id="SystemFont_5imvq"]
 font_names = PackedStringArray("Trebuchet MS")
 subpixel_positioning = 0
+
+[sub_resource type="Resource" id="Resource_7goak"]
+resource_local_to_scene = true
+script = ExtResource("3_kvf2v")
+font_size = 2.285
+is_bold = false
+is_italic = false
+is_underlined = false
+override_font_color = false
+font_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_bmqtn"]
+resource_local_to_scene = true
+script = ExtResource("4_363vg")
+font_size = 1.714
+is_bold = false
+is_italic = false
+is_underlined = false
+override_font_color = false
+font_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_5svo7"]
+resource_local_to_scene = true
+script = ExtResource("5_760qj")
+font_size = 1.428
+is_bold = false
+is_italic = false
+is_underlined = false
+override_font_color = false
+font_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_lidcd"]
+resource_local_to_scene = true
+script = ExtResource("6_28kd2")
+font_size = 1.142
+is_bold = false
+is_italic = false
+is_underlined = false
+override_font_color = false
+font_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_acf85"]
+resource_local_to_scene = true
+script = ExtResource("7_ol25n")
+font_size = 1.0
+is_bold = false
+is_italic = false
+is_underlined = false
+override_font_color = false
+font_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_w2w8r"]
+resource_local_to_scene = true
+script = ExtResource("8_5cmgc")
+font_size = 0.857
+is_bold = false
+is_italic = false
+is_underlined = false
+override_font_color = false
+font_color = Color(1, 1, 1, 1)
 
 [node name="MessageContainer" type="HBoxContainer"]
 custom_minimum_size = Vector2(1040, 0)
@@ -43,7 +110,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="CharacterMessage" type="RichTextLabel" parent="TextContainer"]
-unique_name_in_owner = true
 custom_minimum_size = Vector2(940, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -55,3 +121,10 @@ bbcode_enabled = true
 text = "[MESSAGE]"
 fit_content = true
 selection_enabled = true
+script = ExtResource("2_na0ju")
+h1 = SubResource("Resource_7goak")
+h2 = SubResource("Resource_bmqtn")
+h3 = SubResource("Resource_5svo7")
+h4 = SubResource("Resource_lidcd")
+h5 = SubResource("Resource_acf85")
+h6 = SubResource("Resource_w2w8r")
