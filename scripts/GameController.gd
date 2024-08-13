@@ -86,7 +86,7 @@ func send_request_stream(msg: String, model: String) -> void:
 		HTTPClient.METHOD_POST,
 		endpoint["chat_endpoint"],
 		endpoint["headers"],
-		str(endpoint["params"])
+		JSON.stringify(endpoint["params"]),
 	)
 
 	assert(error_code == OK)
@@ -130,10 +130,11 @@ func stream_server_response() -> void:
 		var chunk_text := chunk.get_string_from_utf8()
 		content += parse_chunk(chunk_text)
 		text_stream_data_received.emit(parse_chunk(chunk_text))
+		print(chunk_text)
 
 
 	add_message("assistant", content)
-	print("Mensagem recebida:\n%s" % messages[-1])
+	# print("Mensagem recebida:\n%s" % messages[-1])
 	print("Bytes recebidos: ", read_buffer.size())
 	text_stream_finished.emit()
 

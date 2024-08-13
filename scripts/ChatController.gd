@@ -9,6 +9,7 @@ extends Node
 @export var chat_container: VBoxContainer
 @export var input: LineEdit
 @export var scroll_container: ScrollContainer
+@export var audio_player: AudioStreamPlayer
 
 @onready var scrollbar: VScrollBar = scroll_container.get_v_scroll_bar()
 
@@ -21,6 +22,7 @@ signal typing_finished
 
 func _ready() -> void:
 	scrollbar.changed.connect(_on_scrollbar_changed)
+	audio_player.finished.connect(_on_audio_player_finished)
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
 
@@ -51,6 +53,13 @@ func animate_text(chat_msg: Node) -> void:
 
 	typing_finished.emit()
 
+func _on_audio_player_finished() -> void:
+	# Altera levemente o pitch do som para criar um efeito mais dinâmico
+	audio_player.pitch_scale = randf_range(0.9, 1.0)
+
+	audio_player.play()
+	await typing_char_added
+
 func _on_message_submitted(text: String) -> void:
 	if text.strip_edges() == "":
 		return
@@ -80,13 +89,19 @@ func _on_text_stream_started() -> void:
 	animate_text(text_stream_chat_msg)
 
 func _on_text_stream_data_received(msg: String) -> void:
-	# await get_tree().create_timer(0.1).timeout
-	# text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text += msg
 	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").markdown_text += msg
 
 func _on_text_stream_finished() -> void:
 	pass
 
+func _on_typing_started() -> void:
+	audio_player.play()
+
+func _on_typing_char_added() -> void:
+	pass
+
 func _on_typing_finished() -> void:
 	# text_stream_chat_msg = null
 	toggle_input(true)
+	await audio_player.finished
+	audio_player.stop()
