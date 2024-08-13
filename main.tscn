@@ -43,7 +43,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container", "audio_player")]
+[node name="ResponseLengthContainer" type="PanelContainer" parent="UI"]
+layout_mode = 0
+offset_left = 1026.0
+offset_top = 259.0
+offset_right = 1126.0
+offset_bottom = 299.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
+
+[node name="ResponseLength" type="Label" parent="UI/ResponseLengthContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "-/-"
+horizontal_alignment = 1
+text_overrun_behavior = 1
+
+[node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container", "audio_player", "response_length_display")]
 layout_mode = 2
 anchor_left = 0.5
 anchor_top = 0.5
@@ -67,6 +83,7 @@ chat_container = NodePath("ScrollContainer/ChatContainer")
 input = NodePath("Input")
 scroll_container = NodePath("ScrollContainer")
 audio_player = NodePath("../../AudioStreamPlayer")
+response_length_display = NodePath("../ResponseLengthContainer/ResponseLength")
 
 [node name="Input" type="LineEdit" parent="UI/ChatPanel"]
 layout_mode = 2

@@ -10,6 +10,7 @@ extends Node
 @export var input: LineEdit
 @export var scroll_container: ScrollContainer
 @export var audio_player: AudioStreamPlayer
+@export var response_length_display: Label
 
 @onready var scrollbar: VScrollBar = scroll_container.get_v_scroll_bar()
 
@@ -53,6 +54,16 @@ func animate_text(chat_msg: Node) -> void:
 
 	typing_finished.emit()
 
+func update_response_length_display() -> void:
+	if text_stream_chat_msg == null:
+		response_length_display.text = "-/-"
+		return
+
+	var visible_chars: int = text_stream_chat_msg.get_node("TextContainer/CharacterMessage").visible_characters
+	var total_chars: int = text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text.length()
+
+	response_length_display.text = "%s/%s" % [visible_chars, total_chars]
+
 func _on_audio_player_finished() -> void:
 	# Altera levemente o pitch do som para criar um efeito mais dinâmico
 	audio_player.pitch_scale = randf_range(0.9, 1.0)
@@ -72,6 +83,9 @@ func _on_clear_pressed() -> void:
 	toggle_input(true)
 	for msg in chat_container.get_children():
 		msg.queue_free()
+
+	text_stream_chat_msg = null
+	update_response_length_display()
 
 # Move a barra de rolagem para o final sempre que novas mensagens forem adicionadas
 func _on_scrollbar_changed() -> void:
@@ -98,7 +112,7 @@ func _on_typing_started() -> void:
 	audio_player.play()
 
 func _on_typing_char_added() -> void:
-	pass
+	update_response_length_display()
 
 func _on_typing_finished() -> void:
 	# text_stream_chat_msg = null
