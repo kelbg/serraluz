@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/ChatController.gd" id="1_8wvgl"]
 [ext_resource type="Script" path="res://scripts/GameController.gd" id="1_fkfaa"]
-[ext_resource type="Texture2D" uid="uid://bel12na1j1fvl" path="res://characters/openai-white-logomark.png" id="2_34ysv"]
 [ext_resource type="PackedScene" uid="uid://q7mlu3p62o65" path="res://components/message_container.tscn" id="2_50mcd"]
 [ext_resource type="Texture2D" uid="uid://b2b41tv6pcjij" path="res://characters/graldor0.png" id="2_ivcat"]
 [ext_resource type="Texture2D" uid="uid://deb2u11k1fxqi" path="res://icon.svg" id="2_ljsy7"]
+[ext_resource type="Resource" uid="uid://orub857ckp64" path="res://characters/Graldor.tres" id="2_n83vv"]
 [ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://sfx/typing_01_1.5x.ogg" id="3_6keju"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mial8"]
@@ -29,7 +29,6 @@ font_names = PackedStringArray("Bahnschrift")
 
 [node name="GameController" type="Node" parent="."]
 script = ExtResource("1_fkfaa")
-char_icon = ExtResource("2_34ysv")
 max_retries = 5
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
@@ -74,6 +73,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 script = ExtResource("1_8wvgl")
 player_name = "Você"
+character = ExtResource("2_n83vv")
 chars_per_second = 40
 message_template = ExtResource("2_50mcd")
 default_placeholder_text = "Digite sua mensagem"
@@ -180,10 +180,9 @@ fit_content = true
 [connection signal="text_stream_data_received" from="GameController" to="UI/ChatPanel" method="_on_text_stream_data_received"]
 [connection signal="text_stream_finished" from="GameController" to="UI/ChatPanel" method="_on_text_stream_finished"]
 [connection signal="text_stream_started" from="GameController" to="UI/ChatPanel" method="_on_text_stream_started"]
+[connection signal="player_message_submitted" from="UI/ChatPanel" to="GameController" method="_on_player_message_submitted"]
 [connection signal="typing_char_added" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_char_added"]
 [connection signal="typing_finished" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_finished"]
 [connection signal="typing_started" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_started"]
-[connection signal="text_submitted" from="UI/ChatPanel/Input" to="GameController" method="_on_message_submitted"]
-[connection signal="text_submitted" from="UI/ChatPanel/Input" to="UI/ChatPanel" method="_on_message_submitted"]
 [connection signal="pressed" from="UI/ChatPanel/ClearButton" to="GameController" method="_on_clear_pressed"]
 [connection signal="pressed" from="UI/ChatPanel/ClearButton" to="UI/ChatPanel" method="_on_clear_pressed"]

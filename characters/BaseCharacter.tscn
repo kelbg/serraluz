@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://c0fyt6q7qi72v"]
-
-[ext_resource type="Script" path="res://characters/BaseCharacter.gd" id="1_mniot"]
-
-[node name="Character" type="Node"]
-script = ExtResource("1_mniot")

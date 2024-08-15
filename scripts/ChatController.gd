@@ -1,6 +1,7 @@
 extends Node
 
 @export var player_name: String
+@export var character: Character
 @export var chars_per_second: int
 @export var message_template: PackedScene
 @export var default_placeholder_text: String
@@ -17,6 +18,7 @@ extends Node
 # Referência ao node do chat que irá receber a mensagem via text streaming da API
 var text_stream_chat_msg: Node
 
+signal player_message_submitted(msg: String, to: Character)
 signal typing_started
 signal typing_char_added
 signal typing_finished
@@ -24,6 +26,8 @@ signal typing_finished
 func _ready() -> void:
 	scrollbar.changed.connect(_on_scrollbar_changed)
 	audio_player.finished.connect(_on_audio_player_finished)
+	input.text_submitted.connect(_on_input_text_submitted)
+
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
 
@@ -71,13 +75,16 @@ func _on_audio_player_finished() -> void:
 	audio_player.play()
 	await typing_char_added
 
-func _on_message_submitted(text: String) -> void:
+# Valida a entrada do jogador, adiciona a mensagem no chat e sinaliza o evento
+func _on_input_text_submitted(text: String) -> void:
 	if text.strip_edges() == "":
 		return
 
 	add_chat_message(player_name, text)
+	# toggle_input(false)
 	input.clear()
-	toggle_input(false)
+	player_message_submitted.emit(text, character)
+
 
 func _on_clear_pressed() -> void:
 	toggle_input(true)
