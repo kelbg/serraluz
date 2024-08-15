@@ -1,8 +1,10 @@
 extends Node
 
 # @export var char_icon: Texture2D
+# @export var char_icon: Texture2D
 @export var max_retries: int
 
+signal request_sent()
 signal request_sent()
 signal text_stream_data_received(msg: String)
 signal text_stream_started()
@@ -11,6 +13,7 @@ signal text_stream_finished()
 var messages: Array
 var endpoint: Dictionary
 var client: HTTPClient
+var current_character: Character
 var current_character: Character
 
 func _ready() -> void:
@@ -131,9 +134,11 @@ func stream_server_response() -> void:
 		content += parse_chunk(chunk_text)
 		text_stream_data_received.emit(parse_chunk(chunk_text))
 		# print(chunk_text)
+		# print(chunk_text)
 
 
 	add_message("assistant", content)
+	print("Mensagem recebida:\n%s" % messages[-1])
 	print("Mensagem recebida:\n%s" % messages[-1])
 	print("Bytes recebidos: ", read_buffer.size())
 	text_stream_finished.emit()

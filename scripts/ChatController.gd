@@ -18,6 +18,7 @@ extends Node
 var text_stream_chat_msg: Node
 
 signal player_message_submitted(msg: String, to: Character)
+signal player_message_submitted(msg: String, to: Character)
 signal typing_started
 signal typing_char_added
 signal typing_finished
@@ -25,6 +26,8 @@ signal typing_finished
 func _ready() -> void:
 	scrollbar.changed.connect(_on_scrollbar_changed)
 	audio_player.finished.connect(_on_audio_player_finished)
+	input.text_submitted.connect(_on_input_text_submitted)
+
 	input.text_submitted.connect(_on_input_text_submitted)
 
 	input.placeholder_text = default_placeholder_text
@@ -76,12 +79,16 @@ func _on_audio_player_finished() -> void:
 
 # Valida a entrada do jogador, adiciona a mensagem no chat e sinaliza o evento
 func _on_input_text_submitted(text: String) -> void:
+# Valida a entrada do jogador, adiciona a mensagem no chat e sinaliza o evento
+func _on_input_text_submitted(text: String) -> void:
 	if text.strip_edges() == "":
 		return
 
 	add_chat_message(player, text)
 	# toggle_input(false)
 	input.clear()
+	player_message_submitted.emit(text, character)
+
 	player_message_submitted.emit(text, character)
 
 
