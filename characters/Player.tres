@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Character" load_steps=3 format=3 uid="uid://d34m1hlwqteux"]
+
+[ext_resource type="Script" path="res://characters/Character.gd" id="1_g6364"]
+[ext_resource type="Texture2D" uid="uid://deb2u11k1fxqi" path="res://icon.svg" id="1_ndeu5"]
+
+[resource]
+script = ExtResource("1_g6364")
+name = "Você"
+icon = ExtResource("1_ndeu5")
+description = ""
+instructions = ""

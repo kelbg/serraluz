@@ -1,9 +1,9 @@
 extends Node
 
-@export var char_icon: Texture2D
+# @export var char_icon: Texture2D
 @export var max_retries: int
 
-signal request_sent(char_name: String)
+signal request_sent()
 signal text_stream_data_received(msg: String)
 signal text_stream_started()
 signal text_stream_finished()
@@ -11,11 +11,11 @@ signal text_stream_finished()
 var messages: Array
 var endpoint: Dictionary
 var client: HTTPClient
+var current_character: Character
 
 func _ready() -> void:
 	endpoint = setup_endpoint("OpenAI")
 	client = await setup_client()
-	# add_message("character.txt")
 
 func setup_client(retry_count: int = 0) -> HTTPClient:
 	var new_client := HTTPClient.new()
@@ -91,7 +91,7 @@ func send_request_stream(msg: String, model: String) -> void:
 
 	assert(error_code == OK)
 	print("Requisição enviada. Aguardando resposta...")
-	request_sent.emit("ChatGPT", char_icon)
+	request_sent.emit()
 	handle_server_response()
 
 func handle_server_response() -> void:
@@ -130,11 +130,11 @@ func stream_server_response() -> void:
 		var chunk_text := chunk.get_string_from_utf8()
 		content += parse_chunk(chunk_text)
 		text_stream_data_received.emit(parse_chunk(chunk_text))
-		print(chunk_text)
+		# print(chunk_text)
 
 
 	add_message("assistant", content)
-	# print("Mensagem recebida:\n%s" % messages[-1])
+	print("Mensagem recebida:\n%s" % messages[-1])
 	print("Bytes recebidos: ", read_buffer.size())
 	text_stream_finished.emit()
 
@@ -159,11 +159,17 @@ func parse_chunk(chunk_text: String) -> String:
 
 	return output
 
-func _on_message_submitted(message: String) -> void:
-	send_request_stream(message, "gpt-4o-mini")
-	pass
+func load_character_prompt(character: Character) -> void:
+	messages.clear()
+	add_message("system", character.get_prompt())
 
+func _on_player_message_submitted(msg: String, character: Character) -> void:
+	if character != current_character:
+		print("Chat iniciado com '%s'. Carregando prompt." % character.name)
+		load_character_prompt(character)
+		current_character = character
+
+	send_request_stream(msg, "gpt-4o-mini")
 
 func _on_clear_pressed() -> void:
 	messages.clear()
-	# add_message("character.txt")

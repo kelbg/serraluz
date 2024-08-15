@@ -1,11 +1,11 @@
 extends Node
 
-@export var player_name: String
+@export var player: Character
+@export var character: Character
 @export var chars_per_second: int
 @export var message_template: PackedScene
 @export var default_placeholder_text: String
 @export var awaiting_response_placeholder_text: String
-@export var default_char_icon: Texture2D
 @export var chat_container: VBoxContainer
 @export var input: LineEdit
 @export var scroll_container: ScrollContainer
@@ -17,6 +17,7 @@ extends Node
 # Referência ao node do chat que irá receber a mensagem via text streaming da API
 var text_stream_chat_msg: Node
 
+signal player_message_submitted(msg: String, to: Character)
 signal typing_started
 signal typing_char_added
 signal typing_finished
@@ -24,14 +25,16 @@ signal typing_finished
 func _ready() -> void:
 	scrollbar.changed.connect(_on_scrollbar_changed)
 	audio_player.finished.connect(_on_audio_player_finished)
+	input.text_submitted.connect(_on_input_text_submitted)
+
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
 
-func add_chat_message(char_name: String, msg: String, icon: Texture2D = default_char_icon) -> Node:
+func add_chat_message(chat_character: Character, msg: String) -> Node:
 	var new_msg: Node = message_template.instantiate()
 	new_msg.get_node("TextContainer/CharacterMessage").text = msg
-	new_msg.get_node("CharacterInfoContainer/CharacterName").text = char_name
-	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = icon
+	new_msg.get_node("CharacterInfoContainer/CharacterName").text = chat_character.name
+	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = chat_character.icon
 	chat_container.add_child(new_msg)
 	return new_msg
 
@@ -71,13 +74,16 @@ func _on_audio_player_finished() -> void:
 	audio_player.play()
 	await typing_char_added
 
-func _on_message_submitted(text: String) -> void:
+# Valida a entrada do jogador, adiciona a mensagem no chat e sinaliza o evento
+func _on_input_text_submitted(text: String) -> void:
 	if text.strip_edges() == "":
 		return
 
-	add_chat_message(player_name, text)
+	add_chat_message(player, text)
+	# toggle_input(false)
 	input.clear()
-	toggle_input(false)
+	player_message_submitted.emit(text, character)
+
 
 func _on_clear_pressed() -> void:
 	toggle_input(true)
@@ -91,9 +97,11 @@ func _on_clear_pressed() -> void:
 func _on_scrollbar_changed() -> void:
 	scroll_container.scroll_vertical = int(scrollbar.max_value)
 
-func _on_request_sent(char_name: String, icon: Texture2D = default_char_icon) -> void:
-	await get_tree().process_frame # Evita que a resposta seja exibida antes da msg do jogador
-	text_stream_chat_msg = add_chat_message(char_name, "", icon)
+func _on_request_sent() -> void:
+	# Evita que a resposta seja exibida antes da msg do jogador
+	await get_tree().process_frame 
+	# Texto inicialmente vazio pois a msg ainda será transmitida aos poucos via text streaming
+	text_stream_chat_msg = add_chat_message(character, "")
 	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").visible_characters = 0
 	toggle_input(false)
 
