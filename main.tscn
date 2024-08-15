@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://q7mlu3p62o65" path="res://components/message_container.tscn" id="2_50mcd"]
 [ext_resource type="Texture2D" uid="uid://b2b41tv6pcjij" path="res://characters/graldor0.png" id="2_ivcat"]
 [ext_resource type="Texture2D" uid="uid://deb2u11k1fxqi" path="res://icon.svg" id="2_ljsy7"]
-[ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://typing_01_1.5x.ogg" id="3_6keju"]
+[ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://sfx/typing_01_1.5x.ogg" id="3_6keju"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mial8"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -96,7 +96,6 @@ grow_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_r25pw")
 
 [node name="ClearButton" type="Button" parent="UI/ChatPanel"]
-unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
