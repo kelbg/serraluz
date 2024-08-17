@@ -1,18 +1,14 @@
 extends Node
 
-# @export var char_icon: Texture2D
-# @export var char_icon: Texture2D
 @export var max_retries: int
 
 signal request_sent()
-signal text_stream_data_received(msg: String)
 signal text_stream_started()
-signal text_stream_finished()
+signal text_stream_data_received(data: String)
+signal text_stream_finished(full_response: String)
 
-var messages: Array
 var endpoint: Dictionary
 var client: HTTPClient
-var current_character: Character
 
 func _ready() -> void:
 	endpoint = setup_endpoint("OpenAI")
@@ -53,9 +49,6 @@ func check_connection(some_client: HTTPClient, retry: bool = true, retry_count: 
 	print("Tentando restabecer conexão...")
 	return await setup_client(retry_count + 1)
 
-func add_message(role: String, msg: String) -> void:
-	messages.append({"role": role, "content": msg})
-
 func setup_endpoint(service: String) -> Dictionary:
 	print("Configurando endpoint para '%s'..." % service)
 	var new_endpoint: Dictionary = JSON.parse_string(FileAccess.open("config/endpoints.json", FileAccess.READ).get_as_text())[service]
@@ -72,16 +65,14 @@ func get_api_key(service: String) -> String:
 	cfg.load("config/environment.cfg")
 	return cfg.get_value("", "%s_API_KEY" % service)
 
-func send_request_stream(msg: String, model: String) -> void:
+func send_request_stream(model: String, msg_history: Array = []) -> void:
 	client = await check_connection(client)
-
-	add_message("user", msg)
-	endpoint["params"]["messages"] = messages
 	endpoint["params"]["model"] = model
+	endpoint["params"]["messages"] = msg_history
 	endpoint["params"]["stream"] = true
 
-	var approx_token_count := str(messages).length() / 4.0
-	print("Enviando requisição. Contexto (~%d tokens):\n%s" % [approx_token_count, "\n".join(messages)])
+	var approx_token_count := str(msg_history).length() / 4.0
+	print("Enviando requisição. Contexto (~%d tokens):\n%s" % [approx_token_count, "\n".join(msg_history)])
 
 	var error_code := client.request(
 		HTTPClient.METHOD_POST,
@@ -133,11 +124,9 @@ func stream_server_response() -> void:
 		text_stream_data_received.emit(parse_chunk(chunk_text))
 		# print(chunk_text)
 
-
-	add_message("assistant", content)
-	print("Mensagem recebida:\n%s" % messages[-1])
+	print("Conteúdo completo da resposta:\n%s" % content)
 	print("Bytes recebidos: ", read_buffer.size())
-	text_stream_finished.emit()
+	text_stream_finished.emit(content)
 
 # Extrai o conteúdo de um chunk, que pode ter mais de um conjunto de dados (separados por \n)
 func parse_chunk(chunk_text: String) -> String:
@@ -157,20 +146,7 @@ func parse_chunk(chunk_text: String) -> String:
 
 		output += json["choices"][0]["delta"]["content"]
 
-
 	return output
 
-func load_character_prompt(character: Character) -> void:
-	messages.clear()
-	add_message("system", character.get_prompt())
-
-func _on_player_message_submitted(msg: String, character: Character) -> void:
-	if character != current_character:
-		print("Chat iniciado com '%s'. Carregando prompt." % character.name)
-		load_character_prompt(character)
-		current_character = character
-
-	send_request_stream(msg, "gpt-4o-mini")
-
-func _on_clear_pressed() -> void:
-	messages.clear()
+func _on_player_message_submitted(msg_history: Array) -> void:
+	send_request_stream("gpt-4o-mini", msg_history)

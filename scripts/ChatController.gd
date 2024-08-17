@@ -3,9 +3,10 @@ extends Node
 @export var player: Character
 @export var character: Character
 @export var chars_per_second: int
-@export var message_template: PackedScene
 @export var default_placeholder_text: String
 @export var awaiting_response_placeholder_text: String
+
+@export var message_template: PackedScene
 @export var chat_container: VBoxContainer
 @export var input: LineEdit
 @export var scroll_container: ScrollContainer
@@ -14,7 +15,8 @@ extends Node
 
 @onready var scrollbar: VScrollBar = scroll_container.get_v_scroll_bar()
 
-# Referência ao node do chat que irá receber a mensagem via text streaming da API
+var messages: Array
+# Node do chat que irá receber a mensagem via text streaming da API
 var text_stream_chat_msg: Node
 
 signal player_message_submitted(msg: String, to: Character)
@@ -29,12 +31,21 @@ func _ready() -> void:
 	
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
+	start_new_chat()
 
-func add_chat_message(chat_character: Character, msg: String) -> Node:
+# Retorna uma msg no formato que é usado pela maioria das APIs
+func new_message(role: String, msg: String) -> Dictionary:
+	return {"role": role, "content": msg}
+
+func add_chat_message(from: Character, msg: String) -> Node:
+	# Define o papel com base no personagem
+	var role := "user" if from == player else "assistant"
+	messages.append(new_message(role, msg))
+
 	var new_msg: Node = message_template.instantiate()
 	new_msg.get_node("TextContainer/CharacterMessage").text = msg
-	new_msg.get_node("CharacterInfoContainer/CharacterName").text = chat_character.name
-	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = chat_character.icon
+	new_msg.get_node("CharacterInfoContainer/CharacterName").text = from.name
+	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = from.icon
 	chat_container.add_child(new_msg)
 	return new_msg
 
@@ -54,7 +65,6 @@ func animate_text(chat_msg: Node) -> void:
 		typing_char_added.emit()
 		await get_tree().create_timer(1.0 / chars_per_second).timeout
 
-
 	typing_finished.emit()
 
 func update_response_length_display() -> void:
@@ -66,6 +76,23 @@ func update_response_length_display() -> void:
 	var total_chars: int = text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text.length()
 
 	response_length_display.text = "%s/%s" % [visible_chars, total_chars]
+
+func start_new_chat() -> void:
+	clear_chat()
+	load_system_prompt(character)
+	print("Novo chat iniciado com '%s'. Carregando prompt." % character.name)
+
+func clear_chat() -> void:
+	toggle_input(true)
+	for msg in chat_container.get_children():
+		msg.queue_free()
+
+	messages.clear()
+	text_stream_chat_msg = null
+	update_response_length_display()
+
+func load_system_prompt(c: Character) -> void:
+	messages.append(new_message("system", c.get_prompt()))
 
 func _on_audio_player_finished() -> void:
 	# Altera levemente o pitch do som para criar um efeito mais dinâmico
@@ -80,26 +107,18 @@ func _on_input_text_submitted(text: String) -> void:
 		return
 
 	add_chat_message(player, text)
-	# toggle_input(false)
+	toggle_input(false)
 	input.clear()
-	player_message_submitted.emit(text, character)
-
+	player_message_submitted.emit(messages)
 
 func _on_clear_pressed() -> void:
-	toggle_input(true)
-	for msg in chat_container.get_children():
-		msg.queue_free()
-
-	text_stream_chat_msg = null
-	update_response_length_display()
+	start_new_chat()
 
 # Move a barra de rolagem para o final sempre que novas mensagens forem adicionadas
 func _on_scrollbar_changed() -> void:
 	scroll_container.scroll_vertical = int(scrollbar.max_value)
 
 func _on_request_sent() -> void:
-	# Evita que a resposta seja exibida antes da msg do jogador
-	await get_tree().process_frame 
 	# Texto inicialmente vazio pois a msg ainda será transmitida aos poucos via text streaming
 	text_stream_chat_msg = add_chat_message(character, "")
 	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").visible_characters = 0
@@ -110,10 +129,11 @@ func _on_text_stream_started() -> void:
 	await get_tree().create_timer(0.2).timeout
 	animate_text(text_stream_chat_msg)
 
-func _on_text_stream_data_received(msg: String) -> void:
-	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").markdown_text += msg
+func _on_text_stream_data_received(chunk: String) -> void:
+	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").markdown_text += chunk
+	messages[-1]["content"] += chunk
 
-func _on_text_stream_finished() -> void:
+func _on_text_stream_finished(_full_response: String) -> void:
 	pass
 
 func _on_typing_started() -> void:
@@ -123,7 +143,6 @@ func _on_typing_char_added() -> void:
 	update_response_length_display()
 
 func _on_typing_finished() -> void:
-	# text_stream_chat_msg = null
 	toggle_input(true)
 	await audio_player.finished
 	audio_player.stop()

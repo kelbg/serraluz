@@ -75,9 +75,9 @@ script = ExtResource("1_8wvgl")
 player = ExtResource("4_tyhv1")
 character = ExtResource("2_n83vv")
 chars_per_second = 40
-message_template = ExtResource("2_50mcd")
 default_placeholder_text = "Digite sua mensagem"
 awaiting_response_placeholder_text = "Aguardando resposta..."
+message_template = ExtResource("2_50mcd")
 chat_container = NodePath("ScrollContainer/ChatContainer")
 input = NodePath("Input")
 scroll_container = NodePath("ScrollContainer")
@@ -183,5 +183,4 @@ fit_content = true
 [connection signal="typing_char_added" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_char_added"]
 [connection signal="typing_finished" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_finished"]
 [connection signal="typing_started" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_started"]
-[connection signal="pressed" from="UI/ChatPanel/ClearButton" to="GameController" method="_on_clear_pressed"]
 [connection signal="pressed" from="UI/ChatPanel/ClearButton" to="UI/ChatPanel" method="_on_clear_pressed"]
