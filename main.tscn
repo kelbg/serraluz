@@ -77,6 +77,11 @@ character = ExtResource("2_n83vv")
 chars_per_second = 40
 default_placeholder_text = "Digite sua mensagem"
 awaiting_response_placeholder_text = "Aguardando resposta..."
+intro_message = "Após dias de viagem por trilhas sinuosas, você avança pela estrada que serpenteia através de uma densa floresta. O caminho, uma vereda estreita e esburacada, foi marcado por desafios constantes: bandos de criaturas selvagens que espreitavam na penumbra das árvores e tempestades repentinas que tornavam o percurso quase intransitável. Em um momento especialmente difícil, um grupo de bandidos apareceu repentinamente. Desarmado e sem chance de enfrentar os assaltantes, você usou sua astúcia para escapar, escondendo-se entre as sombras e escapando do perigo.
+
+Exausto, você retoma sua jornada com determinação. A noite começa a cair e a neblina densa torna o caminho incerto. Felizmente, ao cruzar uma curva da estrada, você avista uma pequena vila à distância, com as luzes de lanternas piscando através da bruma. Aproximando-se, você vê uma placa de madeira antiga com o nome “Serraluz” gravado em letras gastas pelo tempo. A pequena comunidade, aninhada entre colinas cobertas de névoa, exala uma aura de tranquilidade contrastante com as adversidades da jornada. Ao chegar à entrada da vila, você avista uma aconchegante taverna que promete oferecer alívio e descanso após uma árdua jornada.
+
+[center][url={\"character\": \"undefined\"}][Ir até a taverna][/url]		[url={\"character\": \"Graldor Pedratorvo\"}][Ir até a forja][/url][/center]"
 message_template = ExtResource("2_50mcd")
 chat_container = NodePath("ScrollContainer/ChatContainer")
 input = NodePath("Input")

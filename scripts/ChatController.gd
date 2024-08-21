@@ -5,6 +5,7 @@ extends Node
 @export var chars_per_second: int
 @export var default_placeholder_text: String
 @export var awaiting_response_placeholder_text: String
+@export_multiline var intro_message: String
 
 @export var message_template: PackedScene
 @export var chat_container: VBoxContainer
@@ -31,7 +32,8 @@ func _ready() -> void:
 	
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
-	start_new_chat()
+	# start_new_chat()
+	load_intro_message()
 
 # Retorna uma msg no formato que é usado pela maioria das APIs
 func new_message(role: String, msg: String) -> Dictionary:
@@ -44,6 +46,7 @@ func add_chat_message(from: Character, msg: String) -> Node:
 
 	var new_msg: Node = message_template.instantiate()
 	new_msg.get_node("TextContainer/CharacterMessage").text = msg
+	new_msg.get_node("TextContainer/CharacterMessage").connect("meta_clicked", _on_meta_clicked)
 	new_msg.get_node("CharacterInfoContainer/CharacterName").text = from.name
 	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = from.icon
 	chat_container.add_child(new_msg)
@@ -59,7 +62,7 @@ func animate_text(chat_msg: Node) -> void:
 	toggle_input(false)
 	typing_started.emit()
 
-	var text_field: MarkdownLabel = chat_msg.get_node("TextContainer/CharacterMessage")
+	var text_field: RichTextLabel = chat_msg.get_node("TextContainer/CharacterMessage")
 	while text_field.visible_characters < text_field.text.length():
 		text_field.visible_characters += 1
 		typing_char_added.emit()
@@ -93,6 +96,10 @@ func clear_chat() -> void:
 
 func load_system_prompt(c: Character) -> void:
 	messages.append(new_message("system", c.get_prompt()))
+
+func load_intro_message() -> void:
+	add_chat_message(Character.new(), intro_message)
+	# toggle_input(false)
 
 func _on_audio_player_finished() -> void:
 	# Altera levemente o pitch do som para criar um efeito mais dinâmico
@@ -130,7 +137,7 @@ func _on_text_stream_started() -> void:
 	animate_text(text_stream_chat_msg)
 
 func _on_text_stream_data_received(chunk: String) -> void:
-	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").markdown_text += chunk
+	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text += chunk
 	messages[-1]["content"] += chunk
 
 func _on_text_stream_finished(_full_response: String) -> void:
@@ -146,3 +153,14 @@ func _on_typing_finished() -> void:
 	toggle_input(true)
 	await audio_player.finished
 	audio_player.stop()
+
+# Acionado quando o jogador clicar em algum link no chat
+func _on_meta_clicked(meta: String) -> void:
+	var link: Dictionary = JSON.parse_string(meta)
+	print("Meta: %s" % meta)
+
+	if link == null:
+		return
+
+	if link.character == character.name:
+		start_new_chat()

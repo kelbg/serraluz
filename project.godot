@@ -27,10 +27,6 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="TKU24"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/markdownlabel/plugin.cfg")
-
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
