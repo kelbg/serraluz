@@ -6,6 +6,7 @@ extends Node
 @export var default_placeholder_text: String
 @export var awaiting_response_placeholder_text: String
 @export_multiline var intro_message: String
+@export_multiline var link_template: String
 
 @export var message_template: PackedScene
 @export var chat_container: VBoxContainer
@@ -33,7 +34,20 @@ func _ready() -> void:
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
 	# start_new_chat()
-	load_intro_message()
+	toggle_input(false)
+	var intro_msg := load_intro_message()
+	add_chat_actions(intro_msg, [
+		{
+		"type": "chat",
+		"target": "undefined",
+		"text": "Ir até a taverna"
+		},
+		{
+		"type": "chat",
+		"target": character.name,
+		"text": "Ir até a forja"
+		}
+	])
 
 # Retorna uma msg no formato que é usado pela maioria das APIs
 func new_message(role: String, msg: String) -> Dictionary:
@@ -46,7 +60,7 @@ func add_chat_message(from: Character, msg: String) -> Node:
 
 	var new_msg: Node = message_template.instantiate()
 	new_msg.get_node("TextContainer/CharacterMessage").text = msg
-	new_msg.get_node("TextContainer/CharacterMessage").connect("meta_clicked", _on_meta_clicked)
+	# new_msg.get_node("TextContainer/CharacterMessage").connect("meta_clicked", _on_meta_clicked)
 	new_msg.get_node("CharacterInfoContainer/CharacterName").text = from.name
 	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = from.icon
 	chat_container.add_child(new_msg)
@@ -97,9 +111,22 @@ func clear_chat() -> void:
 func load_system_prompt(c: Character) -> void:
 	messages.append(new_message("system", c.get_prompt()))
 
-func load_intro_message() -> void:
-	add_chat_message(Character.new(), intro_message)
-	# toggle_input(false)
+func load_intro_message() -> Node:
+	return add_chat_message(Character.new(), intro_message)
+
+# Adiciona links que o jogador pode clicar para executar uma ação no chat
+func add_chat_actions(chat_msg_container: Node, actions: Array) -> void:
+	var msg := chat_msg_container.get_node("TextContainer/CharacterMessage")
+
+	if !msg.is_connected("meta_clicked", _on_meta_clicked):
+		msg.connect("meta_clicked", _on_meta_clicked)
+
+	var urls := []
+	for action: Dictionary in actions:
+		urls.append("[url={\"%s\": \"%s\"}]%s[/url]" % [action.type, action.target, action.text])
+
+	var new_action := link_template.replace("{{action}}", "\t\t".join(urls))
+	msg.text += "\n\n" + new_action
 
 func _on_audio_player_finished() -> void:
 	# Altera levemente o pitch do som para criar um efeito mais dinâmico
@@ -162,5 +189,6 @@ func _on_meta_clicked(meta: String) -> void:
 	if link == null:
 		return
 
-	if link.character == character.name:
+	if link.chat == character.name:
+		toggle_input(true)
 		start_new_chat()
