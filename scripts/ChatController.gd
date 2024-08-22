@@ -34,7 +34,7 @@ func _ready() -> void:
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
 	# start_new_chat()
-	toggle_input(false)
+	toggle_input(false, "Selecione uma ação acima")
 	var intro_msg := load_intro_message()
 	add_chat_actions(intro_msg, [
 		{
@@ -67,8 +67,13 @@ func add_chat_message(from: Character, msg: String) -> Node:
 	return new_msg
 
 # Habilitar impede que o jogador envie novas msgs antes de receber uma resposta
-func toggle_input(enabled: bool) -> void:
+func toggle_input(enabled: bool, placeholder_text: String = "") -> void:
 	input.editable = enabled
+
+	if placeholder_text != "":
+		input.placeholder_text = placeholder_text
+		return
+
 	input.placeholder_text = default_placeholder_text if enabled else awaiting_response_placeholder_text
 
 # Anima o texto, exibindo um caractere de cada vez
