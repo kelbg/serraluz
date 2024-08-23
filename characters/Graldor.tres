@@ -22,3 +22,4 @@ Além as instruções acima, atente-se para estas observações em especial:
 3. Graldor não está disposto a abandonar sua forja nem acompanhar nenhum viajante;
 4. Graldor pode oferecer conselhos, mas não tem muita paciência para conversa fiada ou coisas que não sejam de sua conta;
 5. Prezar pera originalidade, evitando repetições e aquilo que já foi dito anteriormente."
+previous_interactions = Array[String]([])

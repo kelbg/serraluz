@@ -7,6 +7,7 @@ extends Node
 @export var awaiting_response_placeholder_text: String
 @export_multiline var intro_message: String
 @export_multiline var link_template: String
+@export_multiline var prev_interactions_instructions: String
 
 @export var message_template: PackedScene
 @export var system_message_template: PackedScene
@@ -49,6 +50,11 @@ func _ready() -> void:
 		"text": "[ IR ATÉ a FORJA ]"
 		}
 	])
+
+	var previous_interaction := "O jogador cumprimenta Graldor, que oferece seus serviços como ferreiro. O jogador menciona ter sido emboscado por bandidos e decide comprar uma espada. Graldor oferece forjar uma espada simples por 20 moedas de ouro, que o jogador paga. Graldor então se dedica à forja e, após um tempo, entrega a espada, desejando que ela seja um bom companheiro nas jornadas do jogador. O jogador agradece a Graldor.
+"
+	character.previous_interactions.append(previous_interaction)
+	# ResourceSaver.save(character, character.resource_path)
 
 # Retorna uma msg no formato que é usado pela maioria das APIs
 func new_message(role: String, msg: String) -> Dictionary:
@@ -129,6 +135,7 @@ func clear_chat() -> void:
 
 func load_system_prompt(c: Character) -> void:
 	messages.append(new_message("system", c.get_prompt()))
+	messages.append(new_message("system", prev_interactions_instructions + "\n\n".join(c.previous_interactions)))
 
 func load_intro_message() -> Node:
 	var msg := add_chat_message(null, intro_message)

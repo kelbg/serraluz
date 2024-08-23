@@ -4,6 +4,7 @@ class_name Character extends Resource
 @export var icon: Texture2D
 @export_multiline var description: String
 @export_multiline var instructions: String
+@export_multiline var previous_interactions: Array[String]
 
 func get_prompt() -> String:
 	var output := """
