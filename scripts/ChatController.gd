@@ -54,17 +54,31 @@ func new_message(role: String, msg: String) -> Dictionary:
 	return {"role": role, "content": msg}
 
 func add_chat_message(from: Character, msg: String) -> Node:
-	# Define o papel com base no personagem
-	var role := "user" if from == player else "assistant"
+	var role := get_role(from)
 	messages.append(new_message(role, msg))
 
 	var new_msg: Node = message_template.instantiate()
 	new_msg.get_node("TextContainer/CharacterMessage").text = msg
-	# new_msg.get_node("TextContainer/CharacterMessage").connect("meta_clicked", _on_meta_clicked)
-	new_msg.get_node("CharacterInfoContainer/CharacterName").text = from.name
-	new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = from.icon
+
+	if role == "system":
+		new_msg.get_node("CharacterInfoContainer").queue_free()
+		(new_msg.get_node("TextContainer/CharacterMessage") as Control).set("theme_override_colors/default_color", Color.GRAY)
+	else:
+		new_msg.get_node("CharacterInfoContainer/CharacterName").text = from.name
+		new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = from.icon
+
 	chat_container.add_child(new_msg)
 	return new_msg
+
+# Define o papel com base no personagem
+func get_role(some_character: Character) -> String:
+	match some_character:
+		player:
+			return "user"
+		character:
+			return "assistant"
+		_:
+			return "system"
 
 # Habilitar impede que o jogador envie novas msgs antes de receber uma resposta
 func toggle_input(enabled: bool, placeholder_text: String = "") -> void:
@@ -117,7 +131,8 @@ func load_system_prompt(c: Character) -> void:
 	messages.append(new_message("system", c.get_prompt()))
 
 func load_intro_message() -> Node:
-	return add_chat_message(Character.new(), intro_message)
+	var msg := add_chat_message(null, intro_message)
+	return msg
 
 # Adiciona links que o jogador pode clicar para executar uma ação no chat
 func add_chat_actions(chat_msg_container: Node, actions: Array) -> void:
@@ -128,7 +143,7 @@ func add_chat_actions(chat_msg_container: Node, actions: Array) -> void:
 
 	var urls := []
 	for action: Dictionary in actions:
-		urls.append("[url={\"%s\": \"%s\"}]%s[/url]" % [action.type, action.target, action.text])
+		urls.append("[url={\"%s\": \"%s\"}]%s[/url]" % [action.type, action.target, action.text.to_upper()])
 
 	var new_action := link_template.replace("{{action}}", "\t\t".join(urls))
 	msg.text += "\n\n" + new_action

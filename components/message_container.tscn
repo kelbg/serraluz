@@ -1,13 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://q7mlu3p62o65"]
 
+[ext_resource type="FontFile" uid="uid://s3y7ifk6uwkf" path="res://fonts/HopeGold.ttf" id="1_k20n3"]
 [ext_resource type="Texture2D" uid="uid://deb2u11k1fxqi" path="res://icon.svg" id="1_njv0p"]
-
-[sub_resource type="SystemFont" id="SystemFont_k6uud"]
-font_names = PackedStringArray("Trebuchet MS")
-
-[sub_resource type="SystemFont" id="SystemFont_5imvq"]
-font_names = PackedStringArray("Trebuchet MS")
-subpixel_positioning = 0
+[ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="3_x1ysg"]
 
 [node name="MessageContainer" type="HBoxContainer"]
 custom_minimum_size = Vector2(1040, 0)
@@ -20,8 +15,8 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_k6uud")
-theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = ExtResource("1_k20n3")
+theme_override_font_sizes/font_size = 16
 text = "[CHARACTER]"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -47,7 +42,8 @@ custom_minimum_size = Vector2(940, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
-theme_override_fonts/normal_font = SubResource("SystemFont_5imvq")
+theme_override_fonts/normal_font = ExtResource("3_x1ysg")
+theme_override_fonts/bold_font = ExtResource("3_x1ysg")
 theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
 fit_content = true
