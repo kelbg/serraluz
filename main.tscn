@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://d7jxnej2vcu5"]
+[gd_scene load_steps=12 format=3 uid="uid://d7jxnej2vcu5"]
 
 [ext_resource type="Script" path="res://scripts/ChatController.gd" id="1_8wvgl"]
 [ext_resource type="Script" path="res://scripts/GameController.gd" id="1_fkfaa"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://orub857ckp64" path="res://characters/Graldor.tres" id="2_n83vv"]
 [ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://sfx/typing_01_1.5x.ogg" id="3_6keju"]
 [ext_resource type="Resource" uid="uid://d34m1hlwqteux" path="res://characters/Player.tres" id="4_tyhv1"]
+[ext_resource type="PackedScene" uid="uid://bbpdxd7tqw1k" path="res://components/system_message_container.tscn" id="7_7rqwm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mial8"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -82,6 +83,7 @@ intro_message = "Após dias de viagem por trilhas sinuosas, você avança pela e
 Exausto, você retoma sua jornada com determinação. A noite começa a cair e a neblina densa torna o caminho incerto. Felizmente, ao cruzar uma curva da estrada, você avista uma pequena vila à distância, com as luzes de lanternas piscando através da bruma. Aproximando-se, você vê uma placa de madeira antiga com o nome “Serraluz” gravado em letras gastas pelo tempo. A pequena comunidade, aninhada entre colinas cobertas de névoa, exala uma aura de tranquilidade contrastante com as adversidades da jornada. Ao chegar à entrada da vila, você avista uma aconchegante taverna que promete oferecer alívio e descanso após uma árdua jornada."
 link_template = "[center][font_size=18][color=gold][pulse freq=1.0 color=#ffffff80 ease=-1.0]{{action}}[/pulse][/color][/font_size][/center]"
 message_template = ExtResource("2_50mcd")
+system_message_template = ExtResource("7_7rqwm")
 chat_container = NodePath("ScrollContainer/ChatContainer")
 input = NodePath("Input")
 scroll_container = NodePath("ScrollContainer")

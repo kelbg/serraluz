@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbpdxd7tqw1k"]
+
+[ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="3_bkd5c"]
+
+[node name="MessageContainer" type="HBoxContainer"]
+custom_minimum_size = Vector2(1040, 0)
+
+[node name="TextContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CharacterMessage" type="RichTextLabel" parent="TextContainer"]
+custom_minimum_size = Vector2(940, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/default_color = Color(1, 1, 1, 0.752941)
+theme_override_fonts/normal_font = ExtResource("3_bkd5c")
+theme_override_fonts/bold_font = ExtResource("3_bkd5c")
+theme_override_font_sizes/normal_font_size = 14
+bbcode_enabled = true
+text = "TEST"
+fit_content = true

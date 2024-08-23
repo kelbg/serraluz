@@ -9,6 +9,7 @@ extends Node
 @export_multiline var link_template: String
 
 @export var message_template: PackedScene
+@export var system_message_template: PackedScene
 @export var chat_container: VBoxContainer
 @export var input: LineEdit
 @export var scroll_container: ScrollContainer
@@ -40,12 +41,12 @@ func _ready() -> void:
 		{
 		"type": "chat",
 		"target": "undefined",
-		"text": "Ir até a taverna"
+		"text": "[ IR ATÉ A TAVERNA ]"
 		},
 		{
 		"type": "chat",
 		"target": character.name,
-		"text": "Ir até a forja"
+		"text": "[ IR ATÉ a FORJA ]"
 		}
 	])
 
@@ -57,16 +58,15 @@ func add_chat_message(from: Character, msg: String) -> Node:
 	var role := get_role(from)
 	messages.append(new_message(role, msg))
 
-	var new_msg: Node = message_template.instantiate()
-	new_msg.get_node("TextContainer/CharacterMessage").text = msg
-
+	var new_msg: Node
 	if role == "system":
-		new_msg.get_node("CharacterInfoContainer").queue_free()
-		(new_msg.get_node("TextContainer/CharacterMessage") as Control).set("theme_override_colors/default_color", Color.GRAY)
+		new_msg = system_message_template.instantiate()
 	else:
+		new_msg = message_template.instantiate()
 		new_msg.get_node("CharacterInfoContainer/CharacterName").text = from.name
 		new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = from.icon
 
+	new_msg.get_node("TextContainer/CharacterMessage").text = msg
 	chat_container.add_child(new_msg)
 	return new_msg
 
@@ -143,7 +143,7 @@ func add_chat_actions(chat_msg_container: Node, actions: Array) -> void:
 
 	var urls := []
 	for action: Dictionary in actions:
-		urls.append("[url={\"%s\": \"%s\"}]%s[/url]" % [action.type, action.target, action.text.to_upper()])
+		urls.append("[url={\"%s\": \"%s\"}]%s[/url]" % [action.type, action.target, action.text])
 
 	var new_action := link_template.replace("{{action}}", "\t\t".join(urls))
 	msg.text += "\n\n" + new_action
