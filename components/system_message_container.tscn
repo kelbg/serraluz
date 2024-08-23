@@ -1,15 +1,32 @@
-[gd_scene load_steps=2 format=3 uid="uid://bbpdxd7tqw1k"]
+[gd_scene load_steps=3 format=3 uid="uid://b6urc3lubjr4k"]
 
 [ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="3_bkd5c"]
 
-[node name="MessageContainer" type="HBoxContainer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52qjh"]
+content_margin_left = 15.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.144063, 0.144063, 0.144063, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="MessageContainer" type="PanelContainer"]
 custom_minimum_size = Vector2(1040, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_52qjh")
 
-[node name="TextContainer" type="CenterContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 5
 
-[node name="CharacterMessage" type="RichTextLabel" parent="TextContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 15
+
+[node name="CharacterMessage" type="RichTextLabel" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(940, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -19,5 +36,6 @@ theme_override_fonts/normal_font = ExtResource("3_bkd5c")
 theme_override_fonts/bold_font = ExtResource("3_bkd5c")
 theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
-text = "TEST"
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec neque mauris. Sed sit amet iaculis mi, eu pretium odio. Aliquam convallis arcu scelerisque nunc pretium facilisis. Maecenas sollicitudin nec orci ac lobortis. Etiam fringilla risus et felis imperdiet consectetur. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean pretium velit sapien, quis hendrerit magna maximus nec. Vestibulum varius fermentum lorem et interdum. Quisque diam erat, egestas at pulvinar id, viverra vel nisl. Praesent turpis massa, egestas at rutrum a, ultrices eget nibh. Sed non lectus luctus, suscipit eros ac, aliquam urna.
+"
 fit_content = true

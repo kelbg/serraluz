@@ -69,10 +69,10 @@ func add_chat_message(from: Character, msg: String) -> Node:
 		new_msg = system_message_template.instantiate()
 	else:
 		new_msg = message_template.instantiate()
-		new_msg.get_node("CharacterInfoContainer/CharacterName").text = from.name
-		new_msg.get_node("CharacterInfoContainer/CharacterIconContainer/CharacterIcon").texture = from.icon
+		new_msg.get_node("VBoxContainer/CharacterName").text = from.name.to_upper()
+		new_msg.get_node("VBoxContainer/HBoxContainer/CharacterIcon").texture = from.icon
 
-	new_msg.get_node("TextContainer/CharacterMessage").text = msg
+	new_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text = msg
 	chat_container.add_child(new_msg)
 	return new_msg
 
@@ -101,7 +101,7 @@ func animate_text(chat_msg: Node) -> void:
 	toggle_input(false)
 	typing_started.emit()
 
-	var text_field: RichTextLabel = chat_msg.get_node("TextContainer/CharacterMessage")
+	var text_field: RichTextLabel = chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage")
 	while text_field.visible_characters < text_field.text.length():
 		text_field.visible_characters += 1
 		typing_char_added.emit()
@@ -114,8 +114,9 @@ func update_response_length_display() -> void:
 		response_length_display.text = "-/-"
 		return
 
-	var visible_chars: int = text_stream_chat_msg.get_node("TextContainer/CharacterMessage").visible_characters
-	var total_chars: int = text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text.length()
+	var chat_msg := text_stream_chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage")
+	var visible_chars: int = chat_msg.visible_characters
+	var total_chars: int = chat_msg.text.length()
 
 	response_length_display.text = "%s/%s" % [visible_chars, total_chars]
 
@@ -143,7 +144,7 @@ func load_intro_message() -> Node:
 
 # Adiciona links que o jogador pode clicar para executar uma ação no chat
 func add_chat_actions(chat_msg_container: Node, actions: Array) -> void:
-	var msg := chat_msg_container.get_node("TextContainer/CharacterMessage")
+	var msg := chat_msg_container.get_node("VBoxContainer/HBoxContainer/CharacterMessage")
 
 	if !msg.is_connected("meta_clicked", _on_meta_clicked):
 		msg.connect("meta_clicked", _on_meta_clicked)
@@ -175,6 +176,9 @@ func _on_input_text_submitted(text: String) -> void:
 func _on_clear_pressed() -> void:
 	start_new_chat()
 
+func _on_send_pressed() -> void:
+	_on_input_text_submitted(input.text)
+
 # Move a barra de rolagem para o final sempre que novas mensagens forem adicionadas
 func _on_scrollbar_changed() -> void:
 	scroll_container.scroll_vertical = int(scrollbar.max_value)
@@ -182,7 +186,7 @@ func _on_scrollbar_changed() -> void:
 func _on_request_sent() -> void:
 	# Texto inicialmente vazio pois a msg ainda será transmitida aos poucos via text streaming
 	text_stream_chat_msg = add_chat_message(character, "")
-	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").visible_characters = 0
+	text_stream_chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").visible_characters = 0
 	toggle_input(false)
 
 func _on_text_stream_started() -> void:
@@ -191,7 +195,7 @@ func _on_text_stream_started() -> void:
 	animate_text(text_stream_chat_msg)
 
 func _on_text_stream_data_received(chunk: String) -> void:
-	text_stream_chat_msg.get_node("TextContainer/CharacterMessage").text += chunk
+	text_stream_chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text += chunk
 	messages[-1]["content"] += chunk
 
 func _on_text_stream_finished(_full_response: String) -> void:

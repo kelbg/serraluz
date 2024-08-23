@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d7jxnej2vcu5"]
+[gd_scene load_steps=14 format=3 uid="uid://d7jxnej2vcu5"]
 
 [ext_resource type="Script" path="res://scripts/ChatController.gd" id="1_8wvgl"]
 [ext_resource type="Script" path="res://scripts/GameController.gd" id="1_fkfaa"]
@@ -7,7 +7,7 @@
 [ext_resource type="Resource" uid="uid://orub857ckp64" path="res://characters/Graldor.tres" id="2_n83vv"]
 [ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://sfx/typing_01_1.5x.ogg" id="3_6keju"]
 [ext_resource type="Resource" uid="uid://d34m1hlwqteux" path="res://characters/Player.tres" id="4_tyhv1"]
-[ext_resource type="PackedScene" uid="uid://bbpdxd7tqw1k" path="res://components/system_message_container.tscn" id="7_7rqwm"]
+[ext_resource type="PackedScene" uid="uid://b6urc3lubjr4k" path="res://components/system_message_container.tscn" id="7_7rqwm"]
 [ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="8_vtrk3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mial8"]
@@ -17,7 +17,16 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rea1l"]
+content_margin_left = 20.0
+content_margin_top = 15.0
+content_margin_right = 60.0
+content_margin_bottom = 15.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r25pw"]
+content_margin_left = 10.0
+content_margin_right = 30.0
 bg_color = Color(0.243137, 0.243137, 0.243137, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
@@ -47,9 +56,9 @@ grow_vertical = 2
 [node name="ResponseLengthContainer" type="PanelContainer" parent="UI"]
 layout_mode = 0
 offset_left = 1026.0
-offset_top = 259.0
+offset_top = 177.0
 offset_right = 1126.0
-offset_bottom = 299.0
+offset_bottom = 217.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 
 [node name="ResponseLength" type="Label" parent="UI/ResponseLengthContainer"]
@@ -67,7 +76,7 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -550.0
-offset_top = -20.0
+offset_top = -102.0
 offset_right = 550.0
 offset_bottom = 298.0
 grow_horizontal = 2
@@ -89,22 +98,42 @@ prev_interactions_instructions = "Dê continuidade à conversa, remetendo às in
 message_template = ExtResource("2_50mcd")
 system_message_template = ExtResource("7_7rqwm")
 chat_container = NodePath("ScrollContainer/ChatContainer")
-input = NodePath("Input")
+input = NodePath("PanelContainer/Input")
 scroll_container = NodePath("ScrollContainer")
 audio_player = NodePath("../../AudioStreamPlayer")
 response_length_display = NodePath("../ResponseLengthContainer/ResponseLength")
 
-[node name="Input" type="LineEdit" parent="UI/ChatPanel"]
-layout_mode = 2
-offset_left = 20.0
-offset_top = 272.0
-offset_right = 1020.0
-offset_bottom = 303.0
+[node name="PanelContainer" type="PanelContainer" parent="UI/ChatPanel"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rea1l")
+
+[node name="Input" type="LineEdit" parent="UI/ChatPanel/PanelContainer"]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("8_vtrk3")
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxFlat_r25pw")
+
+[node name="SendButton" type="Button" parent="UI/ChatPanel/PanelContainer/Input"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -32.0
+offset_top = -31.0
+offset_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "➤"
+flat = true
 
 [node name="ClearButton" type="Button" parent="UI/ChatPanel"]
 layout_mode = 1
@@ -113,10 +142,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -42.0
-offset_top = -47.0
-offset_right = -10.0
-offset_bottom = -15.0
+offset_left = -45.0
+offset_top = -46.0
+offset_right = -13.0
+offset_bottom = -14.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "🗑️"
@@ -129,13 +158,14 @@ anchor_bottom = 1.0
 offset_left = 20.0
 offset_top = 15.0
 offset_right = -20.0
-offset_bottom = -56.0
+offset_bottom = -70.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ChatContainer" type="VBoxContainer" parent="UI/ChatPanel/ScrollContainer"]
-custom_minimum_size = Vector2(1040, 247)
+custom_minimum_size = Vector2(1040, 300)
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI"]
 visible = false
@@ -195,4 +225,5 @@ fit_content = true
 [connection signal="typing_char_added" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_char_added"]
 [connection signal="typing_finished" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_finished"]
 [connection signal="typing_started" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_started"]
+[connection signal="pressed" from="UI/ChatPanel/PanelContainer/Input/SendButton" to="UI/ChatPanel" method="_on_send_pressed"]
 [connection signal="pressed" from="UI/ChatPanel/ClearButton" to="UI/ChatPanel" method="_on_clear_pressed"]
