@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://d7jxnej2vcu5"]
+[gd_scene load_steps=15 format=3 uid="uid://d7jxnej2vcu5"]
 
 [ext_resource type="Script" path="res://scripts/ChatController.gd" id="1_8wvgl"]
 [ext_resource type="Script" path="res://scripts/GameController.gd" id="1_fkfaa"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://orub857ckp64" path="res://characters/Graldor.tres" id="2_n83vv"]
 [ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://sfx/typing_01_1.5x.ogg" id="3_6keju"]
 [ext_resource type="Resource" uid="uid://d34m1hlwqteux" path="res://characters/Player.tres" id="4_tyhv1"]
+[ext_resource type="Resource" uid="uid://coxqver5b5p4d" path="res://characters/Lirian.tres" id="6_555lu"]
 [ext_resource type="PackedScene" uid="uid://b6urc3lubjr4k" path="res://components/system_message_container.tscn" id="7_7rqwm"]
 [ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="8_vtrk3"]
 
@@ -84,7 +85,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 script = ExtResource("1_8wvgl")
 player = ExtResource("4_tyhv1")
-character = ExtResource("2_n83vv")
+characters = Array[Resource("res://characters/Character.gd")]([ExtResource("2_n83vv"), ExtResource("6_555lu")])
 chars_per_second = 40
 default_placeholder_text = "Digite sua mensagem"
 awaiting_response_placeholder_text = "Aguardando resposta..."

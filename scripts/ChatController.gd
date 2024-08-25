@@ -1,7 +1,7 @@
 extends Node
 
 @export var player: Character
-@export var character: Character
+@export var characters: Array[Character]
 @export var chars_per_second: int
 @export var default_placeholder_text: String
 @export var awaiting_response_placeholder_text: String
@@ -19,9 +19,12 @@ extends Node
 
 @onready var scrollbar: VScrollBar = scroll_container.get_v_scroll_bar()
 
+# Mensagens armazenadas no formato usado pela API
 var messages: Array
 # Node do chat que irá receber a mensagem via text streaming da API
 var text_stream_chat_msg: Node
+# Personagem com o qual o jogador está interagindo
+var current_character: Character
 
 signal player_message_submitted(msg: String, to: Character)
 signal typing_started
@@ -35,19 +38,18 @@ func _ready() -> void:
 	
 	input.placeholder_text = default_placeholder_text
 	input.grab_focus()
-	# start_new_chat()
 	toggle_input(false, "Selecione uma ação acima")
 	var intro_msg := load_intro_message()
 	add_chat_actions(intro_msg, [
 		{
 		"type": "chat",
-		"target": "undefined",
-		"text": "[ IR ATÉ A TAVERNA ]"
+		"target": "Lirian \"Chama Branda\"",
+		"text": "【 IR ATÉ A TARVERNA 】"
 		},
 		{
 		"type": "chat",
-		"target": character.name,
-		"text": "[ IR ATÉ a FORJA ]"
+		"target": "Graldor Pedratorvo",
+		"text": "【 IR ATÉ A FORJA 】"
 		}
 	])
 
@@ -72,14 +74,12 @@ func add_chat_message(from: Character, msg: String) -> Node:
 	return new_msg
 
 # Define o papel com base no personagem
-func get_role(some_character: Character) -> String:
-	match some_character:
-		player:
-			return "user"
-		character:
-			return "assistant"
-		_:
-			return "system"
+func get_role(character: Character) -> String:
+	if character == player:
+		return "user"
+	if characters.has(character):
+		return "assistant"
+	return "system"
 
 # Habilitar impede que o jogador envie novas msgs antes de receber uma resposta
 func toggle_input(enabled: bool, placeholder_text: String = "") -> void:
@@ -115,9 +115,11 @@ func update_response_length_display() -> void:
 
 	response_length_display.text = "%s/%s" % [visible_chars, total_chars]
 
-func start_new_chat() -> void:
+func start_new_chat(character: Character) -> void:
 	clear_chat()
 	load_system_prompt(character)
+	current_character = character
+	toggle_input(true)
 	print("Novo chat iniciado com '%s'. Carregando prompt." % character.name)
 
 func clear_chat() -> void:
@@ -129,9 +131,15 @@ func clear_chat() -> void:
 	text_stream_chat_msg = null
 	update_response_length_display()
 
-func load_system_prompt(c: Character) -> void:
-	messages.append(new_message("system", c.get_prompt()))
-	messages.append(new_message("system", prev_interactions_instructions + "\n\n".join(c.previous_interactions)))
+func load_system_prompt(character: Character) -> void:
+	messages.append(new_message("system", character.get_prompt()))
+
+	if character.previous_interactions.size() > 0:
+		messages.append(new_message(
+			"system",
+			prev_interactions_instructions +
+			"\n\n".join(character.previous_interactions)
+		))
 
 func load_intro_message() -> Node:
 	var msg := add_chat_message(null, intro_message)
@@ -146,10 +154,16 @@ func add_chat_actions(chat_msg_container: Node, actions: Array) -> void:
 
 	var urls := []
 	for action: Dictionary in actions:
-		urls.append("[url={\"%s\": \"%s\"}]%s[/url]" % [action.type, action.target, action.text])
+		urls.append("[url=%s]%s[/url]" % [action, action.text])
 
 	var new_action := link_template.replace("{{action}}", "\t\t".join(urls))
 	msg.text += "\n\n" + new_action
+
+func get_char_by_name(char_name: String) -> Character:
+	for character in characters:
+		if character.name == char_name:
+			return character
+	return null
 
 func _on_audio_player_finished() -> void:
 	# Altera levemente o pitch do som para criar um efeito mais dinâmico
@@ -169,7 +183,10 @@ func _on_input_text_submitted(text: String) -> void:
 	player_message_submitted.emit(messages)
 
 func _on_clear_pressed() -> void:
-	start_new_chat()
+	if current_character == null:
+		return
+
+	start_new_chat(current_character)
 
 func _on_send_pressed() -> void:
 	_on_input_text_submitted(input.text)
@@ -180,7 +197,7 @@ func _on_scrollbar_changed() -> void:
 
 func _on_request_sent() -> void:
 	# Texto inicialmente vazio pois a msg ainda será transmitida aos poucos via text streaming
-	text_stream_chat_msg = add_chat_message(character, "")
+	text_stream_chat_msg = add_chat_message(current_character, "")
 	text_stream_chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").visible_characters = 0
 	toggle_input(false)
 
@@ -209,12 +226,12 @@ func _on_typing_finished() -> void:
 
 # Acionado quando o jogador clicar em algum link no chat
 func _on_meta_clicked(meta: String) -> void:
-	var link: Dictionary = JSON.parse_string(meta)
 	print("Meta: %s" % meta)
 
-	if link == null:
-		return
-
-	if link.chat == character.name:
-		toggle_input(true)
-		start_new_chat()
+	var action: Dictionary = JSON.parse_string(meta)
+	if action.type == "chat":
+		var character := get_char_by_name(action.target)
+		if character != null:
+			start_new_chat(character)
+		else:
+			print("Personagem '%s' não encontrado." % action.target)
