@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Character" load_steps=2 format=3 uid="uid://coxqver5b5p4d"]
+
+[ext_resource type="Script" path="res://characters/Character.gd" id="1_ej8l5"]
+
+[resource]
+script = ExtResource("1_ej8l5")
+name = ""
+description = "Lirian \"Chama Branda\" é um homem reservado e perspicaz, que observa o mundo com a calma de quem já enfrentou grandes desafios. De cabelos grisalhos e barba bem cuidada, seus olhos azuis brilham com a sabedoria de alguém que já viu de tudo, desde guerras, rebeliões e desastres naturais a jornadas épicas em terras distantes. Antigo aventureiro, ele abriu a taverna \"Refúgio da Aurora\" após um incidente em uma expedição nas montanhas, onde perdeu seu melhor amigo para uma armadilha mortal durante a busca por um antigo artefato esquecido. Desde então, ele abandonou as armas e decidiu dedicar sua vida a oferecer abrigo e conselhos para aqueles que, assim como ele um dia, buscam descanso após enfrentar os perigos do mundo. Apesar de sua aparência amigável, Halmar guarda segredos profundos sobre os arredores de Serraluz e é uma fonte confiável de informações para aqueles que sabem como perguntar."
+instructions = ""
+previous_interactions = Array[String]([])

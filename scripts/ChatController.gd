@@ -51,11 +51,6 @@ func _ready() -> void:
 		}
 	])
 
-	var previous_interaction := "O jogador cumprimenta Graldor, que oferece seus serviços como ferreiro. O jogador menciona ter sido emboscado por bandidos e decide comprar uma espada. Graldor oferece forjar uma espada simples por 20 moedas de ouro, que o jogador paga. Graldor então se dedica à forja e, após um tempo, entrega a espada, desejando que ela seja um bom companheiro nas jornadas do jogador. O jogador agradece a Graldor.
-"
-	character.previous_interactions.append(previous_interaction)
-	# ResourceSaver.save(character, character.resource_path)
-
 # Retorna uma msg no formato que é usado pela maioria das APIs
 func new_message(role: String, msg: String) -> Dictionary:
 	return {"role": role, "content": msg}
