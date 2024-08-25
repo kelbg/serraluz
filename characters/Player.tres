@@ -7,5 +7,7 @@
 script = ExtResource("1_g6364")
 name = "Você"
 icon = ExtResource("1_ndeu5")
+role = "viajante"
 description = ""
 instructions = ""
+previous_interactions = Array[String]([])

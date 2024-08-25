@@ -66,7 +66,8 @@ func add_chat_message(from: Character, msg: String) -> Node:
 		new_msg = system_message_template.instantiate()
 	else:
 		new_msg = message_template.instantiate()
-		new_msg.get_node("VBoxContainer/CharacterName").text = from.name.to_upper()
+		# new_msg.get_node("VBoxContainer/CharacterName").text = from.name.to_upper()
+		new_msg.get_node("VBoxContainer/CharacterName").text = "%s (%s)" % [from.name.to_upper(), from.role]
 		new_msg.get_node("VBoxContainer/HBoxContainer/CharacterIcon").texture = from.icon
 
 	new_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text = msg
