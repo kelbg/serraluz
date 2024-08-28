@@ -16,6 +16,7 @@ extends Node
 @export var scroll_container: ScrollContainer
 @export var audio_player: AudioStreamPlayer
 @export var response_length_display: Label
+@export var background_image: TextureRect
 
 @onready var scrollbar: VScrollBar = scroll_container.get_v_scroll_bar()
 
@@ -44,7 +45,7 @@ func _ready() -> void:
 		{
 		"type": "chat",
 		"target": "Lirian \"Chama Branda\"",
-		"text": "【 IR ATÉ A TARVERNA 】"
+		"text": "【 IR ATÉ A TAVERNA 】"
 		},
 		{
 		"type": "chat",
@@ -119,7 +120,9 @@ func update_response_length_display() -> void:
 func start_new_chat(character: Character) -> void:
 	clear_chat()
 	load_system_prompt(character)
+	set_background_image(character.background)
 	current_character = character
+
 	toggle_input(true)
 	print("Novo chat iniciado com '%s'. Carregando prompt." % character.name)
 
@@ -165,6 +168,9 @@ func get_char_by_name(char_name: String) -> Character:
 		if character.name == char_name:
 			return character
 	return null
+
+func set_background_image(image: Texture2D) -> void:
+	background_image.texture = image
 
 func _on_audio_player_finished() -> void:
 	# Altera levemente o pitch do som para criar um efeito mais dinâmico

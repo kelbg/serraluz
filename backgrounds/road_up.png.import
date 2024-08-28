@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dvyk2hj2rjo1w"
-path="res://.godot/imported/tavern3_up.png-bce326b4d15d417e951a51b18b8bca2b.ctex"
+path="res://.godot/imported/road_up.png-dd0b202a755174ad22ed02077d6faa60.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://backgrounds/tavern3_up.png"
-dest_files=["res://.godot/imported/tavern3_up.png-bce326b4d15d417e951a51b18b8bca2b.ctex"]
+source_file="res://backgrounds/road_up.png"
+dest_files=["res://.godot/imported/road_up.png-dd0b202a755174ad22ed02077d6faa60.ctex"]
 
 [params]
 

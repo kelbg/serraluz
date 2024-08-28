@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b2b41tv6pcjij" path="res://characters/graldor0.png" id="2_ivcat"]
 [ext_resource type="Resource" uid="uid://orub857ckp64" path="res://characters/Graldor.tres" id="2_n83vv"]
 [ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://sfx/typing_01_1.5x.ogg" id="3_6keju"]
-[ext_resource type="Texture2D" uid="uid://dvyk2hj2rjo1w" path="res://backgrounds/tavern3_up.png" id="3_hjjay"]
+[ext_resource type="Texture2D" uid="uid://dvyk2hj2rjo1w" path="res://backgrounds/road_up.png" id="3_hjjay"]
 [ext_resource type="Resource" uid="uid://d34m1hlwqteux" path="res://characters/Player.tres" id="4_tyhv1"]
 [ext_resource type="Resource" uid="uid://coxqver5b5p4d" path="res://characters/Lirian.tres" id="6_555lu"]
 [ext_resource type="PackedScene" uid="uid://b6urc3lubjr4k" path="res://components/system_message_container.tscn" id="7_7rqwm"]
@@ -55,7 +55,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BackgroundImage" type="TextureRect" parent="UI"]
+[node name="BackgroundRect" type="TextureRect" parent="UI"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -82,7 +82,7 @@ text = "-/-"
 horizontal_alignment = 1
 text_overrun_behavior = 1
 
-[node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container", "audio_player", "response_length_display")]
+[node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container", "audio_player", "response_length_display", "background_image")]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -116,6 +116,7 @@ input = NodePath("PanelContainer/Input")
 scroll_container = NodePath("ScrollContainer")
 audio_player = NodePath("../../AudioStreamPlayer")
 response_length_display = NodePath("../ResponseLengthContainer/ResponseLength")
+background_image = NodePath("../BackgroundRect")
 
 [node name="PanelContainer" type="PanelContainer" parent="UI/ChatPanel"]
 custom_minimum_size = Vector2(0, 60)
