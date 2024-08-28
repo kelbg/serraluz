@@ -34,7 +34,7 @@ size_flags_vertical = 0
 theme_override_colors/default_color = Color(1, 1, 1, 0.752941)
 theme_override_fonts/normal_font = ExtResource("3_bkd5c")
 theme_override_fonts/bold_font = ExtResource("3_bkd5c")
-theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec neque mauris. Sed sit amet iaculis mi, eu pretium odio. Aliquam convallis arcu scelerisque nunc pretium facilisis. Maecenas sollicitudin nec orci ac lobortis. Etiam fringilla risus et felis imperdiet consectetur. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean pretium velit sapien, quis hendrerit magna maximus nec. Vestibulum varius fermentum lorem et interdum. Quisque diam erat, egestas at pulvinar id, viverra vel nisl. Praesent turpis massa, egestas at rutrum a, ultrices eget nibh. Sed non lectus luctus, suscipit eros ac, aliquam urna.
 "

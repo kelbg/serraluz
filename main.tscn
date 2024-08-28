@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b2b41tv6pcjij" path="res://characters/graldor0.png" id="2_ivcat"]
 [ext_resource type="Resource" uid="uid://orub857ckp64" path="res://characters/Graldor.tres" id="2_n83vv"]
 [ext_resource type="AudioStream" uid="uid://bh5hgfg5asffm" path="res://sfx/typing_01_1.5x.ogg" id="3_6keju"]
-[ext_resource type="Texture2D" uid="uid://b61vkhvedvm3l" path="res://tavern0.webp" id="3_wdt6t"]
+[ext_resource type="Texture2D" uid="uid://dvyk2hj2rjo1w" path="res://backgrounds/tavern3_up.png" id="3_hjjay"]
 [ext_resource type="Resource" uid="uid://d34m1hlwqteux" path="res://characters/Player.tres" id="4_tyhv1"]
 [ext_resource type="Resource" uid="uid://coxqver5b5p4d" path="res://characters/Lirian.tres" id="6_555lu"]
 [ext_resource type="PackedScene" uid="uid://b6urc3lubjr4k" path="res://components/system_message_container.tscn" id="7_7rqwm"]
@@ -62,15 +62,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("3_wdt6t")
+texture = ExtResource("3_hjjay")
+expand_mode = 3
 stretch_mode = 6
 
 [node name="ResponseLengthContainer" type="PanelContainer" parent="UI"]
 layout_mode = 0
-offset_left = 1026.0
-offset_top = 177.0
-offset_right = 1126.0
-offset_bottom = 217.0
+offset_left = 1227.0
+offset_top = 215.0
+offset_right = 1327.0
+offset_bottom = 255.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 
 [node name="ResponseLength" type="Label" parent="UI/ResponseLengthContainer"]
@@ -82,17 +83,18 @@ horizontal_alignment = 1
 text_overrun_behavior = 1
 
 [node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container", "audio_player", "response_length_display")]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -550.0
-offset_top = -102.0
-offset_right = 550.0
-offset_bottom = 298.0
+anchor_bottom = 1.0
+offset_left = -643.0
+offset_top = -508.0
+offset_right = 644.0
+offset_bottom = -39.9996
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 script = ExtResource("1_8wvgl")
 player = ExtResource("4_tyhv1")
@@ -103,7 +105,7 @@ awaiting_response_placeholder_text = "Aguardando resposta..."
 intro_message = "Após dias de viagem por trilhas sinuosas, você avança pela estrada que serpenteia através de uma densa floresta. O caminho, uma vereda estreita e esburacada, foi marcado por desafios constantes: bandos de criaturas selvagens que espreitavam na penumbra das árvores e tempestades repentinas que tornavam o percurso quase intransitável. Em um momento especialmente difícil, um grupo de bandidos apareceu repentinamente. Desarmado e sem chance de enfrentar os assaltantes, você usou sua astúcia para escapar, escondendo-se entre as sombras e escapando do perigo.
 
 Exausto, você retoma sua jornada com determinação. A noite começa a cair e a neblina densa torna o caminho incerto. Felizmente, ao cruzar uma curva da estrada, você avista uma pequena vila à distância, com as luzes de lanternas piscando através da bruma. Aproximando-se, você vê uma placa de madeira antiga com o nome “Serraluz” gravado em letras gastas pelo tempo. A pequena comunidade, aninhada entre colinas cobertas de névoa, exala uma aura de tranquilidade contrastante com as adversidades da jornada. Ao chegar à entrada da vila, você avista uma aconchegante taverna que promete oferecer alívio e descanso após uma árdua jornada."
-link_template = "[center][font_size=18][color=gold][pulse freq=1.0 color=#ffffff80 ease=-1.0]{{action}}[/pulse][/color][/font_size][/center]"
+link_template = "[center][font_size=24][color=gold][pulse freq=1.0 color=#ffffff80 ease=-1.0]{{action}}[/pulse][/color][/font_size][/center]"
 prev_interactions_instructions = "Dê continuidade à conversa, remetendo às interações anteriores com o jogador, conforme apresentado abaixo:
 
 "
@@ -129,7 +131,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rea1l")
 [node name="Input" type="LineEdit" parent="UI/ChatPanel/PanelContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("8_vtrk3")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_r25pw")
 
 [node name="SendButton" type="Button" parent="UI/ChatPanel/PanelContainer/Input"]
@@ -175,17 +177,21 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ChatContainer" type="VBoxContainer" parent="UI/ChatPanel/ScrollContainer"]
-custom_minimum_size = Vector2(1040, 300)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI"]
 visible = false
-layout_mode = 0
-offset_left = 26.0
-offset_top = 20.0
-offset_right = 1126.0
-offset_bottom = 140.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -644.0
+offset_top = 40.0
+offset_right = 644.0
+offset_bottom = 160.0
+grow_horizontal = 2
 
 [node name="Panel" type="Panel" parent="UI/HBoxContainer"]
 custom_minimum_size = Vector2(120, 120)
