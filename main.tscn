@@ -12,6 +12,10 @@
 [ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="8_vtrk3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mial8"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
 bg_color = Color(0.0846899, 0.0846899, 0.0846899, 0.752941)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
@@ -24,6 +28,8 @@ content_margin_top = 15.0
 content_margin_right = 60.0
 content_margin_bottom = 15.0
 bg_color = Color(0.051971, 0.051971, 0.051971, 0.752941)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r25pw"]
 content_margin_left = 10.0
@@ -40,10 +46,10 @@ content_margin_top = 15.0
 content_margin_right = 15.0
 content_margin_bottom = 15.0
 bg_color = Color(0.0862745, 0.0862745, 0.0862745, 0.752941)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jequm"]
 content_margin_left = 20.0
@@ -51,10 +57,10 @@ content_margin_top = 15.0
 content_margin_right = 20.0
 content_margin_bottom = 15.0
 bg_color = Color(0.0862745, 0.0862745, 0.0862745, 0.752941)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="Main" type="Node"]
 
@@ -87,20 +93,40 @@ stretch_mode = 6
 [node name="ResponseLengthContainer" type="PanelContainer" parent="UI"]
 layout_mode = 0
 offset_left = 1227.0
-offset_top = 209.0
+offset_top = 210.0
 offset_right = 1327.0
-offset_bottom = 249.0
+offset_bottom = 250.0
+tooltip_text = "Contagem de caracteres exibidos / recebidos na última mensagem"
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 
 [node name="ResponseLength" type="Label" parent="UI/ResponseLengthContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("8_vtrk3")
+theme_override_font_sizes/font_size = 18
 text = "-/-"
 horizontal_alignment = 1
 text_overrun_behavior = 1
 
-[node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container", "audio_player", "response_length_display", "background_image", "char_info_box")]
+[node name="TokenCountContainer" type="PanelContainer" parent="UI"]
+layout_mode = 0
+offset_left = 1086.0
+offset_top = 210.0
+offset_right = 1216.0
+offset_bottom = 250.0
+tooltip_text = "Estimativa (grosseira) de tokens enviados + recebidos"
+theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
+
+[node name="TokenCount" type="Label" parent="UI/TokenCountContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("8_vtrk3")
+theme_override_font_sizes/font_size = 18
+text = "Tokens: 0"
+horizontal_alignment = 1
+text_overrun_behavior = 1
+
+[node name="ChatPanel" type="Panel" parent="UI" node_paths=PackedStringArray("chat_container", "input", "scroll_container", "audio_player", "response_length_display", "token_count_display", "background_image", "char_info_box")]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -134,6 +160,7 @@ input = NodePath("PanelContainer/Input")
 scroll_container = NodePath("ScrollContainer")
 audio_player = NodePath("../../AudioStreamPlayer")
 response_length_display = NodePath("../ResponseLengthContainer/ResponseLength")
+token_count_display = NodePath("../TokenCountContainer/TokenCount")
 background_image = NodePath("../BackgroundRect")
 char_info_box = NodePath("../CharInfoBox")
 
@@ -202,7 +229,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="CharInfoBox" type="HBoxContainer" parent="UI"]
-visible = false
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5

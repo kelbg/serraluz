@@ -16,6 +16,7 @@ extends Node
 @export var scroll_container: ScrollContainer
 @export var audio_player: AudioStreamPlayer
 @export var response_length_display: Label
+@export var token_count_display: Label
 @export var background_image: TextureRect
 @export var char_info_box: CanvasItem
 
@@ -115,6 +116,13 @@ func update_response_length_display() -> void:
 	var total_chars: int = chat_msg.text.length()
 
 	response_length_display.text = "%s/%s" % [visible_chars, total_chars]
+
+func update_token_count_display() -> void:
+	var approx_token_count := 0
+	for msg: Dictionary in messages:
+		approx_token_count += msg.content.length() / 4
+
+	token_count_display.text = "Tokens: ~%s" % approx_token_count
 
 func start_new_chat(character: Character) -> void:
 	clear_chat()
@@ -228,13 +236,14 @@ func _on_text_stream_started() -> void:
 	# Aguarda até que seja transmitido texto suficiente para não finalizar a animação antes da hora
 	await get_tree().create_timer(0.2).timeout
 	animate_text(text_stream_chat_msg)
+	update_token_count_display()
 
 func _on_text_stream_data_received(chunk: String) -> void:
 	text_stream_chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text += chunk
 	messages[-1]["content"] += chunk
 
 func _on_text_stream_finished(_full_response: String) -> void:
-	pass
+	update_token_count_display()
 
 func _on_typing_started() -> void:
 	audio_player.play()
@@ -249,8 +258,6 @@ func _on_typing_finished() -> void:
 
 # Acionado quando o jogador clicar em algum link no chat
 func _on_meta_clicked(meta: String) -> void:
-	print("Meta: %s" % meta)
-
 	var action: Dictionary = JSON.parse_string(meta)
 	if action.type == "chat":
 		var character := get_char_by_name(action.target)
