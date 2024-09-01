@@ -17,6 +17,7 @@ extends Node
 @export var audio_player: AudioStreamPlayer
 @export var response_length_display: Label
 @export var background_image: TextureRect
+@export var char_info_box: CanvasItem
 
 @onready var scrollbar: VScrollBar = scroll_container.get_v_scroll_bar()
 
@@ -119,8 +120,9 @@ func update_response_length_display() -> void:
 
 func start_new_chat(character: Character) -> void:
 	clear_chat()
-	load_system_prompt(character)
 	set_background_image(character.background)
+	load_system_prompt(character)
+	load_info_box(character)
 	current_character = character
 
 	toggle_input(true)
@@ -171,6 +173,22 @@ func get_char_by_name(char_name: String) -> Character:
 
 func set_background_image(image: Texture2D) -> void:
 	background_image.texture = image
+
+func load_info_box(character: Character) -> void:
+	var portrait := char_info_box.get_node("PortraitContainer/Portrait")
+	var description := char_info_box.get_node("CharDescriptionContainer/CharDescription")
+
+	if character == null:
+		portrait.texture = null
+		description.text = ""
+		char_info_box.visible = false
+		return
+		
+	char_info_box.visible = true
+	var new_text := "[color=gold]%s[/color] - %s\n\n%s" % [character.name.to_upper(), character.role, character.description]
+
+	portrait.texture = character.icon
+	description.text = new_text
 
 func _on_audio_player_finished() -> void:
 	# Altera levemente o pitch do som para criar um efeito mais dinâmico
