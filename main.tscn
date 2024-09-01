@@ -87,9 +87,9 @@ stretch_mode = 6
 [node name="ResponseLengthContainer" type="PanelContainer" parent="UI"]
 layout_mode = 0
 offset_left = 1227.0
-offset_top = 215.0
+offset_top = 209.0
 offset_right = 1327.0
-offset_bottom = 255.0
+offset_bottom = 249.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mial8")
 
 [node name="ResponseLength" type="Label" parent="UI/ResponseLengthContainer"]

@@ -47,11 +47,6 @@ func _ready() -> void:
 		"type": "chat",
 		"target": "Lirian \"Chama Branda\"",
 		"text": "【 IR ATÉ A TAVERNA 】"
-		},
-		{
-		"type": "chat",
-		"target": "Graldor Pedratorvo",
-		"text": "【 IR ATÉ A FORJA 】"
 		}
 	])
 
@@ -69,8 +64,11 @@ func add_chat_message(from: Character, msg: String) -> Node:
 	else:
 		new_msg = message_template.instantiate()
 		# new_msg.get_node("VBoxContainer/CharacterName").text = from.name.to_upper()
-		new_msg.get_node("VBoxContainer/CharacterName").text = "%s (%s)" % [from.name.to_upper(), from.role]
-		new_msg.get_node("VBoxContainer/HBoxContainer/CharacterIcon").texture = from.icon
+		var name_control := new_msg.get_node("VBoxContainer/CharacterName")
+		var char_icon_control := new_msg.get_node("VBoxContainer/HBoxContainer/CharacterIcon")
+		name_control.text = "%s (%s)" % [from.name.to_upper(), from.role]
+		name_control.add_theme_color_override("font_color", from.name_color)
+		char_icon_control.texture = from.icon
 
 	new_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text = msg
 	chat_container.add_child(new_msg)

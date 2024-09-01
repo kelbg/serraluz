@@ -8,6 +8,7 @@ script = ExtResource("1_g6364")
 name = "Você"
 icon = ExtResource("1_ndeu5")
 role = "viajante"
+name_color = Color(0.25098, 0.878431, 0.815686, 0.752941)
 description = ""
 instructions = ""
 previous_interactions = Array[String]([])

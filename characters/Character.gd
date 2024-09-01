@@ -4,6 +4,7 @@ class_name Character extends Resource
 @export var icon: Texture2D
 @export var role: String
 @export var background: Texture2D
+@export var name_color: Color
 @export_multiline var description: String
 @export_multiline var instructions: String
 @export_multiline var previous_interactions: Array[String]
