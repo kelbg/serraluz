@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bt5ejl4u5rvaw"
-path="res://.godot/imported/tavern1.webp-e8d97311625e0276e946fea0f5d6fed5.ctex"
+uid="uid://dt73ej2p7veey"
+path="res://.godot/imported/conversa1.png-a3dc82caaa583c28fae7ec166272690a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://backgrounds/tavern1.webp"
-dest_files=["res://.godot/imported/tavern1.webp-e8d97311625e0276e946fea0f5d6fed5.ctex"]
+source_file="res://conversa1.png"
+dest_files=["res://.godot/imported/conversa1.png-a3dc82caaa583c28fae7ec166272690a.ctex"]
 
 [params]
 
