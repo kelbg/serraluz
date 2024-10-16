@@ -51,7 +51,7 @@ func check_connection(some_client: HTTPClient, retry: bool = true, retry_count: 
 
 func setup_endpoint(service: String) -> Dictionary:
 	print("Configurando endpoint para '%s'..." % service)
-	var new_endpoint: Dictionary = JSON.parse_string(FileAccess.open("config/endpoints.json", FileAccess.READ).get_as_text())[service]
+	var new_endpoint: Dictionary = JSON.parse_string(FileAccess.open("res://config/endpoints.json", FileAccess.READ).get_as_text())[service]
 	new_endpoint["headers"] += [
 		"Content-Type: application/json",
 		"Authorization: Bearer %s" % get_api_key(service)
@@ -62,7 +62,7 @@ func setup_endpoint(service: String) -> Dictionary:
 
 func get_api_key(service: String) -> String:
 	var cfg: ConfigFile = ConfigFile.new()
-	cfg.load("config/environment.cfg")
+	cfg.load("res://config/environment.cfg")
 	return cfg.get_value("", "%s_API_KEY" % service)
 
 func send_request_stream(model: String, msg_history: Array = []) -> void:
