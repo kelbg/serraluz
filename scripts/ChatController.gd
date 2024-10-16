@@ -269,3 +269,8 @@ func _on_meta_clicked(meta: String) -> void:
 			start_new_chat(character)
 		else:
 			print("Personagem '%s' não encontrado." % action.target)
+
+
+# Acionado quando o botão de resetar o chat for pressionado
+func _on_reset_button_pressed() -> void:
+	get_tree().reload_current_scene()

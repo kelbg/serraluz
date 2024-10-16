@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://d7jxnej2vcu5"]
+[gd_scene load_steps=19 format=3 uid="uid://d7jxnej2vcu5"]
 
 [ext_resource type="Script" path="res://scripts/ChatController.gd" id="1_8wvgl"]
 [ext_resource type="Script" path="res://scripts/GameController.gd" id="1_fkfaa"]
@@ -10,6 +10,39 @@
 [ext_resource type="Resource" uid="uid://coxqver5b5p4d" path="res://characters/Lirian.tres" id="6_555lu"]
 [ext_resource type="PackedScene" uid="uid://b6urc3lubjr4k" path="res://components/system_message_container.tscn" id="7_7rqwm"]
 [ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="8_vtrk3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cdahu"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.0862745, 0.0862745, 0.0862745, 0.752941)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4v1mh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.18359, 0.18359, 0.18359, 0.752941)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bd514"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.0338533, 0.0338533, 0.0338533, 0.752941)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mial8"]
 content_margin_left = 0.0
@@ -89,6 +122,19 @@ grow_vertical = 2
 texture = ExtResource("3_hjjay")
 expand_mode = 3
 stretch_mode = 6
+
+[node name="ResetButton" type="Button" parent="UI"]
+layout_mode = 0
+offset_left = 946.0
+offset_top = 210.0
+offset_right = 1076.0
+offset_bottom = 250.0
+theme_override_fonts/font = ExtResource("8_vtrk3")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_cdahu")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4v1mh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bd514")
+text = "⟲ Reiniciar"
 
 [node name="ResponseLengthContainer" type="PanelContainer" parent="UI"]
 layout_mode = 0
@@ -271,6 +317,7 @@ scroll_active = false
 [connection signal="text_stream_data_received" from="GameController" to="UI/ChatPanel" method="_on_text_stream_data_received"]
 [connection signal="text_stream_finished" from="GameController" to="UI/ChatPanel" method="_on_text_stream_finished"]
 [connection signal="text_stream_started" from="GameController" to="UI/ChatPanel" method="_on_text_stream_started"]
+[connection signal="pressed" from="UI/ResetButton" to="UI/ChatPanel" method="_on_reset_button_pressed"]
 [connection signal="player_message_submitted" from="UI/ChatPanel" to="GameController" method="_on_player_message_submitted"]
 [connection signal="typing_char_added" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_char_added"]
 [connection signal="typing_finished" from="UI/ChatPanel" to="UI/ChatPanel" method="_on_typing_finished"]
