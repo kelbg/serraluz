@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b6urc3lubjr4k"]
 
-[ext_resource type="FontFile" uid="uid://gc62kgbwdw2" path="res://fonts/RulerGold.ttf" id="3_bkd5c"]
+[ext_resource type="FontFile" uid="uid://7dcr67e1mbx4" path="res://fonts/RulerGold.ttf" id="3_bkd5c"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52qjh"]
 content_margin_left = 15.0

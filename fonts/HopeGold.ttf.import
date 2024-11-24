@@ -2,7 +2,7 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://s3y7ifk6uwkf"
+uid="uid://bqoihajitymqn"
 path="res://.godot/imported/HopeGold.ttf-c79f7b7c31279afa0a11f09ed1d9e24e.fontdata"
 
 [deps]
@@ -15,7 +15,8 @@ dest_files=["res://.godot/imported/HopeGold.ttf-c79f7b7c31279afa0a11f09ed1d9e24e
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
-multichannel_signed_distance_field=false
+disable_embedded_bitmaps=true
+multichannel_signed_distance_field=true
 msdf_pixel_range=8
 msdf_size=48
 allow_system_fallback=true
@@ -26,8 +27,14 @@ oversampling=0.0
 Fallbacks=null
 fallbacks=[]
 Compress=null
-compress=true
-preload=[]
+compress=false
+preload=[{
+"chars": [],
+"glyphs": [],
+"name": "New Configuration",
+"size": Vector2i(16, 0),
+"variation_embolden": 0.0
+}]
 language_support={}
 script_support={}
 opentype_features={}

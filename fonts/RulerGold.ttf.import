@@ -2,7 +2,7 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://gc62kgbwdw2"
+uid="uid://7dcr67e1mbx4"
 path="res://.godot/imported/RulerGold.ttf-9cbbac1725819233b784e3f610ab3e3a.fontdata"
 
 [deps]
@@ -15,7 +15,8 @@ dest_files=["res://.godot/imported/RulerGold.ttf-9cbbac1725819233b784e3f610ab3e3
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
-multichannel_signed_distance_field=false
+disable_embedded_bitmaps=true
+multichannel_signed_distance_field=true
 msdf_pixel_range=8
 msdf_size=48
 allow_system_fallback=true
@@ -24,10 +25,16 @@ hinting=1
 subpixel_positioning=1
 oversampling=0.0
 Fallbacks=null
-fallbacks=[]
+fallbacks=[Resource("res://fonts/Symbola-AjYx.ttf")]
 Compress=null
-compress=true
-preload=[]
+compress=false
+preload=[{
+"chars": [],
+"glyphs": [],
+"name": "New Configuration",
+"size": Vector2i(16, 0),
+"variation_embolden": 0.0
+}]
 language_support={}
 script_support={}
 opentype_features={}
