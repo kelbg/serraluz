@@ -149,6 +149,6 @@ func parse_chunk(chunk_text: String) -> String:
 	return output
 
 func _on_player_message_submitted(msg_history: Array) -> void:
-	send_request_stream("gpt-3.5-turbo-0125", msg_history)
-	# send_request_stream("gpt-4o-2024-08-06", msg_history)
+	send_request_stream("gpt-4o-2024-11-20", msg_history)
+	# send_request_stream("gpt-3.5-turbo-0125", msg_history)
 	# send_request_stream("gpt-4o-mini", msg_history)

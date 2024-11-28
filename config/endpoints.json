@@ -8,7 +8,7 @@
 			"gpt-4o"
 		],
 		"params": {
-			"max_tokens": 200,
+			"max_tokens": 1000,
 			"temperature": 1.0,
 			"model": "",
 			"messages": []

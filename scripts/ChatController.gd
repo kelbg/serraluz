@@ -77,6 +77,7 @@ func add_chat_message(from: Character, msg: String) -> Node:
 
 	new_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text = msg
 	chat_container.add_child(new_msg)
+	format_char_thoughts(new_msg)
 	return new_msg
 
 # Define o papel com base no personagem
@@ -109,6 +110,37 @@ func animate_text(chat_msg: Node) -> void:
 		await get_tree().create_timer(1.0 / chars_per_second).timeout
 
 	typing_finished.emit()
+
+
+# Formata o texto entre asteriscos (*) para destacar o pensamento do personagem
+func format_char_thoughts(chat_msg: Node, color: String = "dark_gray") -> void:
+	var regex := RegEx.new()
+	# Regex para encontrar pares de asteriscos (*) e o texto entre eles
+	regex.compile(r"\*(.*?)\*")
+	
+	var input_string: String = chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text
+	var matches := regex.search_all(input_string)
+	if not matches:
+		return
+	
+	# Constrói a string de resultado iterando pelos matches
+	var result_string := ""
+	var last_pos := 0
+	
+	for match in matches:
+		# Acrescenta o texto antes do match
+		result_string += input_string.substr(last_pos, match.get_start(0) - last_pos)
+		
+		var matched_text := match.get_string(1)
+		result_string += "[color=%s][i]%s[/i][/color]" % [color, matched_text]
+		
+		# Atualiza a posição para depois do match
+		last_pos = match.get_end(0)
+	
+	# Acrescenta o texto restante
+	result_string += input_string.substr(last_pos)
+	chat_msg.get_node("VBoxContainer/HBoxContainer/CharacterMessage").text = result_string
+
 
 func update_response_length_display() -> void:
 	if text_stream_chat_msg == null:
@@ -257,6 +289,7 @@ func _on_typing_char_added() -> void:
 
 func _on_typing_finished() -> void:
 	toggle_input(true)
+	format_char_thoughts(text_stream_chat_msg)
 	await audio_player.finished
 	audio_player.stop()
 
